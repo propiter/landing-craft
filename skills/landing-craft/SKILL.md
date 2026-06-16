@@ -1,10 +1,10 @@
 ---
 name: landing-craft
-description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that ASKS the questions it needs (intake), then autonomously runs strategy, copy, visual design, build, motion, polish, SEO and review, and DEPLOYS the result (GitHub + Vercel) — shipping a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Next.js by default; framework-agnostic."
+description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that ASKS the questions it needs (intake), then autonomously runs strategy, copy, visual design, build, motion (configurable depth — subtle/medium/rich, with smooth scroll, card hovers, magnetic/tilt via Motion+GSAP+Lenis), polish, SEO and review, and DEPLOYS the result (GitHub + Vercel) — shipping a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Next.js + Tailwind by default (no hardcoded tokens); remembers your style preferences."
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Landing Craft
@@ -77,21 +77,26 @@ Detect the mode from the request; if unclear, ask once.
 
 ## Phase 0 — Intake (ASK before you build)
 
-Never start blind. When the request is just "quiero una landing de X", FIRST ask the few questions
-that actually change the output — use `AskUserQuestion` (one round, 3–5 questions), then run
-autonomously. If the user gives a URL or an existing site, SCRAPE it first (Firecrawl/WebFetch) and
-only ask what you couldn't infer. Ask for:
+First, **load the user's saved style profile** from engram (`mem_search` topic
+`landing-craft/style-profile`): animation intensity (default `medium`), framework = Next.js +
+Tailwind ALWAYS, no hardcoded tokens. Use these as defaults — don't re-ask what's already known.
+
+When the request is just "quiero una landing de X", ask the few questions that actually change the
+output — `AskUserQuestion` (one round, 3–5). If the user gives a URL/existing site, SCRAPE it first
+(Firecrawl/WebFetch) and only ask what you couldn't infer. Ask for:
 
 1. **Producto** — qué hace y qué problema resuelve.
 2. **Audiencia** — quién compra / a quién le hablás.
-3. **La acción** — qué querés que haga el visitante (agendar, comprar, registrarse…).
+3. **La acción** — qué querés que haga (agendar, comprar, registrarse…).
 4. **Tono/marca** — colores, logo, referencias, o "inferilo del producto".
-5. **Framework** — Next.js (default) u otro.
+5. **Nivel de animación** — `menos` / `medio` (default) / `más`. Pre-fill from the saved profile.
 6. **Prueba/assets** — logos, números, testimonios, links.
-7. **Deploy** — ¿publico a Vercel al terminar? (preview por defecto, prod al aprobar).
+7. **Deploy** — ¿publico a Vercel al terminar? (preview por defecto).
 
-If the user can't answer the marketing questions, that's fine — draft them in strategy and confirm.
-They don't need to know marketing; that's the workflow's job. NEVER skip strategy.
+**Do NOT ask about framework** — it's Next.js + Tailwind always (switch only if the user explicitly
+says so). If the user states a lasting preference ("siempre con muchas animaciones"), **update the
+style profile** (`mem_save` same topic key) so it sticks across future landings. If they can't
+answer the marketing questions, draft them in strategy and confirm — never skip strategy.
 
 ## Phase 9 — Deploy (hands-off; the user only opens a URL)
 
@@ -129,8 +134,12 @@ not full content, to keep the thread thin.
 - **Specifics over adjectives.** "Factura ante la DIAN en 60s" beats "la mejor solución innovadora".
 - **Real visual decisions** — a deliberate type scale, a real colour system, generous spacing,
   asymmetry where it helps. Never the framework defaults untouched.
-- **Motion with restraint** — one orchestrated hero reveal beats ten micro-animations; always
-  `prefers-reduced-motion`.
+- **Tailwind + Next.js, no hardcoded tokens** — design tokens live in `tailwind.config`; components
+  use utility classes that reference them. Next.js is the default stack (switch only if told).
+- **Motion with configurable DEPTH, not flat** — apply the user's chosen intensity
+  (`subtle`/`medium`/`rich`, default medium) per `references/animation-levels.md` (Motion · GSAP ·
+  Lenis · Aceternity/Magic UI: card hovers, smooth scroll, counters, magnetic/tilt at the top end).
+  Never flat, never chaotic — one signal per viewport; always `prefers-reduced-motion`.
 - **Accessible & fast** — AA contrast **MEASURED, not eyeballed** (run the scorer in
   `references/contrast-check.md`; it's a hard gate before deploy), focus states, semantic HTML,
   Core Web Vitals green.

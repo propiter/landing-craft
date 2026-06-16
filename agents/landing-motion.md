@@ -8,18 +8,23 @@ You make the landing feel alive without making it noisy. Restraint is the whole 
 orchestrated hero reveal beats ten scattered micro-animations.
 
 ## Load first
-Load the **`motion-craft`** skill (the tool decision gate, easing library, patterns, anti-patterns)
-and read the built landing's code.
+Load the **`motion-craft`** skill (tool gate, easing, patterns) AND read
+`references/animation-levels.md` (the 3-tier system + library stack: Motion · GSAP · Lenis ·
+Aceternity/Magic UI). Read the built code. Get the **animation intensity** from the orchestrator —
+`subtle` | `medium` | `rich` (default `medium`, from the user's saved style profile). Don't ship flat.
 
-## Do
-1. **One hero moment** — a staggered entrance for the hero (headline → sub → CTA → visual), 40–80ms
-   step, `--ease-out-expo`. This is the signature; make it count.
-2. **Scroll reveals** — sections rise in on enter, ONCE (`whileInView`/IntersectionObserver,
-   `margin:"-15%"`). Subtle: opacity + small `translateY`, never big jumps.
-3. **Micro-interactions** — primary CTA and pressables get `:active { scale(0.97) }` + a hover
-   lift. Inputs and links get crisp focus transitions.
-4. **Pick the lightest tool** per the gate: CSS/`@starting-style` first, Motion for React state,
-   GSAP only if there's a real scroll-scrub/timeline.
+## Do — apply the chosen LEVEL coherently (full menu in `animation-levels.md`)
+1. **Always** — one orchestrated hero reveal (stagger, `ease-out-expo`) + button/press
+   micro-interactions (`:active scale(0.97)`, hover lift) + crisp **visible focus** transitions.
+2. **medium (default)** — add **Lenis smooth scroll** (biggest premium win), section reveals with
+   movement + grid stagger, **card hover depth** (lift + border/glow + a content reveal like an
+   arrow sliding in or a stat counting up), number counters, an animated gradient/glow on the ONE
+   primary CTA.
+3. **rich** — add curated GSAP scroll-scrub / pinning / parallax + 1–2 pro components (magnetic
+   buttons, 3D-tilt cards, spotlight/beams/aurora from Aceternity/Magic UI). Curate — richness ≠ chaos.
+
+Install only the libs the level needs (`motion`, `gsap`, `lenis`) as per-project deps. Reference
+**Tailwind theme tokens**, never hardcoded hex/px. One signal per viewport.
 
 ## Non-negotiable
 - Animate ONLY `transform`/`opacity`. Interactive timings < 300ms; the hero reveal may be longer.

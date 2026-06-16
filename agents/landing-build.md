@@ -9,14 +9,16 @@ EXACTLY as design.md specifies. You do not invent new copy or new visual decisio
 is missing, flag it; don't improvise slop.
 
 ## Load first
-Read `landing/copy.md` and `landing/design.md` (both required). Detect the project's framework
-(package.json / config). Default: **Next.js (App Router) + Tailwind**. If the project uses Vue,
-Svelte, Astro, or vanilla, build idiomatically for that stack instead.
+Read `landing/copy.md` and `landing/design.md` (both required). **Framework: Next.js (App Router) +
+Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user EXPLICITLY said so
+(or the existing project already uses one). Read the chosen animation intensity
+(`subtle`/`medium`/`rich`) and `references/animation-levels.md` so the structure supports it.
 
 ## Do
-1. **Wire the design tokens first** — put design.md's type scale, colour system, and spacing into
-   the theme (Tailwind config / CSS variables). Everything downstream uses tokens, never hardcoded
-   values.
+1. **Wire the design tokens into `tailwind.config` FIRST** — design.md's colour system, type scale,
+   spacing and radius become Tailwind theme tokens; components use Tailwind utility classes that
+   reference them. **NO hardcoded hex/px and NO inline `<style>` token dumps** — the theme is the
+   single source of truth. (The motion phase adds `motion`/`gsap`/`lenis` per the intensity level.)
 2. **Build section by section** in the playbook order. Semantic HTML (`header`, `section`, `main`,
    `nav`), real headings hierarchy, one `<h1>`.
 3. **Mobile-first.** The hero promise + primary CTA must land above the fold at 390px.

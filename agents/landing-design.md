@@ -29,6 +29,8 @@ should invoke them.
 6. **Imagery** — real product shots / screenshots / code over generic illustrations.
 
 ## Output
-Write `landing/design.md` with copy-pasteable tokens (CSS variables / Tailwind theme). Return the
-aesthetic direction + accent colour + type pairing to the orchestrator. The build phase MUST
-follow this file — no improvising new visual decisions downstream.
+Write `landing/design.md` with a copy-pasteable **Tailwind theme** (`tailwind.config` →
+`theme.extend`) as the PRIMARY token source for colour, type, spacing and radius (CSS variables only
+as a secondary mirror). **No hardcoded values downstream.** Return the aesthetic direction + accent
+colour + type pairing to the orchestrator. The build phase MUST follow this file — no improvising
+new visual decisions downstream.

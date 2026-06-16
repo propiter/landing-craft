@@ -10,7 +10,7 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 + Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.1.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-9-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
 
@@ -79,6 +79,17 @@ URL (it installs the Vercel CLI if missing and guides the one-time login).
 
 If any bar fails, it isn't done.
 
+## Animation depth — you pick, it remembers
+
+Not flat, not chaotic — a **dial**. Default **medium**; ask for `menos` or `más` and it adjusts (and
+remembers your preference for next time):
+
+- **subtle** — hero reveal, scroll fades, button micro-interactions.
+- **medium** *(default)* — + Lenis smooth scroll, section reveals, **card hover depth**, number counters, CTA glow.
+- **rich** — + GSAP scroll-scrub/parallax, magnetic buttons, 3D-tilt cards, spotlight/beams (Aceternity / Magic UI).
+
+Built on **Motion + GSAP (free) + Lenis**, Next.js + Tailwind, every level `prefers-reduced-motion` safe.
+
 ## Built on a stack, not from scratch
 
 Landing Craft is the **orchestrator**. The deep knowledge lives in skills it composes — install
@@ -94,7 +105,7 @@ those for the full effect:
 landing-craft/
 ├── skills/landing-craft/
 │   ├── SKILL.md              the orchestrator brain — the pipeline & delegation
-│   └── references/playbook.md the conversion architecture (sections, hero, CTA, proof)
+│   └── references/           playbook (conversion) · animation-levels (subtle/medium/rich) · contrast-check (WCAG gate)
 ├── agents/                   9 specialist sub-agents (one per phase, incl. deploy)
 ├── commands/                 /landing · /landing-new · /landing-build · /landing-review · /landing-ship
 └── install.sh                one-command install into ~/.claude
