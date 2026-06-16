@@ -12,19 +12,32 @@ little as possible — ideally nothing but opening a URL. Never run before revie
   `gh repo create <owner>/<name> --public --source=<project-root> --remote=origin --push`
   (or push to an existing remote). If `gh` isn't authenticated, skip and note it; don't block deploy.
 
-## 2. Vercel — install if missing, then auth, then deploy
-1. **Detect:** `vercel --version`. If missing, **install it**: `npm i -g vercel`
-   (fallback: use `npx vercel` for each command if the global install isn't possible).
-2. **Auth:** `vercel whoami`. If it errors (not logged in), the user must authenticate ONCE.
-   `vercel login` is interactive and prints a **link/code** to confirm in the browser — you can't
-   complete it headlessly. Tell the user to run **`! vercel login`** in the session and click the
-   link it shows. STOP and wait for them to confirm they're authenticated, then continue.
-3. **Deploy** from the build directory (static build → the folder with `index.html`; Next.js → the
-   project root):
-   - `vercel deploy` → returns a **preview URL** (default — safe; the user reviews it live).
-   - `vercel deploy --prod` → promote to **production** ONLY after the user approves the preview.
-   On the very first deploy Vercel asks to link/create a project; use `--yes` to accept sensible
-   defaults non-interactively where possible, or relay the prompts to the user.
+## 2. Vercel — install if missing, auth via DEVICE FLOW (no terminal for the user), then deploy
+
+The user must NEVER have to run a terminal command. You drive everything; the user only opens a
+browser link when authentication is genuinely required.
+
+1. **Detect:** `vercel --version`. If missing, **install it**: `npm i -g vercel`.
+2. **Auth (one time only):** `vercel whoami`. If it returns a username, you're already authed →
+   skip straight to deploy (this is the "after the first time, fully automatic" case).
+   If NOT authed:
+   - Run **`vercel login` in the BACKGROUND** (it blocks on "Waiting for authentication...").
+   - Read its output — it prints `Visit https://vercel.com/oauth/device?user_code=XXXX`.
+   - Give the user **only that link**, framed simply: *"Abrí esto en tu navegador y aprobá el
+     acceso 👉 <url>"*. They click + approve in the browser. No terminal, no copy-pasting a token.
+   - The background process completes the moment they approve. Poll `vercel whoami` (every few
+     seconds) until it returns a user, then continue. Credentials persist — this never repeats.
+3. **Deploy** from the build dir (static → folder with `index.html`; Next.js → project root):
+   - **Name the project** sensibly from the brief (e.g. `whitelabel-landing`). Create it FIRST —
+     `vercel project add <name>` — because `--project` needs an existing project. Then:
+     `vercel deploy --yes --cwd <build-dir> --project <name>`.
+   - Promote with `vercel --prod` ONLY on approval.
+   - **Hand the user the PUBLIC URL = the project's production `*.vercel.app` alias** (e.g.
+     `<project>-<suffix>.vercel.app`), NOT the deployment-specific URL — the latter is behind
+     Vercel's default auth protection and returns 401. ALWAYS `curl` the URL first and confirm it
+     returns 200 + your `<title>` (not "Authentication Required") before handing it over.
+   - **Redeploy on updates:** the project is now linked (`.vercel/` in the dir), so a later
+     `vercel deploy` updates the SAME project — use this whenever the user asks for changes.
 
 ## Rules
 - **Preview first, production on approval.** Never push a first draft straight to a live domain.

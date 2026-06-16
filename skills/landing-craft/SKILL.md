@@ -98,12 +98,18 @@ They don't need to know marketing; that's the workflow's job. NEVER skip strateg
 After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing but open a live URL.
 
 1. **GitHub** — if `gh` is authenticated, create + push the repo (`gh repo create … --source … --push`).
-2. **Vercel** — if the `vercel` CLI is missing, **install it** (`npm i -g vercel`). Then check
-   `vercel whoami`; if not authenticated, the user must auth ONCE — have them run `! vercel login`
-   in-session and click the **link** it prints (interactive). Once authed, deploy from the build dir:
-   `vercel deploy` → **preview URL** by default (safe — they review it live); `vercel --prod` to
-   promote when they approve. Static build → deploy the build folder; Next.js → the project root.
-3. Hand back the **live preview URL** + the repo URL, and "approve → promuevo a producción".
+2. **Vercel — no terminal for the user.** If the `vercel` CLI is missing, **install it**
+   (`npm i -g vercel`). Then `vercel whoami`; if not authed, run **`vercel login` in the BACKGROUND**
+   — it prints `Visit https://vercel.com/oauth/device?user_code=XXXX`. Give the user ONLY that link
+   to open + approve in the browser (the page auto-fills the code; they just approve). Poll
+   `vercel whoami` until it returns a user; the session then **persists forever** (every future
+   deploy is fully automatic). Create + name the project first (`vercel project add <name>` — needed
+   because `--project` requires an existing project), then deploy from the build dir:
+   `vercel deploy --yes --cwd <build-dir> --project <name>`. `vercel --prod` to promote on approval.
+3. **The public URL is the project's production `*.vercel.app` alias** — NOT the deployment-specific
+   URL, which sits behind Vercel's default auth protection (401). Verify with a curl (expect 200 +
+   your `<title>`) before handing it over. **Redeploy on updates:** `vercel deploy` again in the
+   linked dir updates the same project. Hand back the **public URL** + the repo URL.
 
 Never auto-promote a first draft straight to production. Preview first, prod on approval.
 
