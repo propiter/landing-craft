@@ -100,8 +100,9 @@ After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing b
 1. **GitHub** — if `gh` is authenticated, create + push the repo (`gh repo create … --source … --push`).
 2. **Vercel — no terminal for the user.** If the `vercel` CLI is missing, **install it**
    (`npm i -g vercel`). Then `vercel whoami`; if not authed, run **`vercel login` in the BACKGROUND**
-   — it prints `Visit https://vercel.com/oauth/device?user_code=XXXX`. Give the user ONLY that link
-   to open + approve in the browser (the page auto-fills the code; they just approve). Poll
+   — it **auto-opens the user's browser** to the device-approval page (code pre-filled; they just
+   click Approve). Tell them to approve the tab that opened; the printed `Visit https://…/oauth/device`
+   link is only a fallback if the browser didn't open (don't have them paste it by hand). Poll
    `vercel whoami` until it returns a user; the session then **persists forever** (every future
    deploy is fully automatic). Create + name the project first (`vercel project add <name>` — needed
    because `--project` requires an existing project), then deploy from the build dir:
@@ -130,7 +131,9 @@ not full content, to keep the thread thin.
   asymmetry where it helps. Never the framework defaults untouched.
 - **Motion with restraint** — one orchestrated hero reveal beats ten micro-animations; always
   `prefers-reduced-motion`.
-- **Accessible & fast** — AA contrast, focus states, semantic HTML, Core Web Vitals green.
+- **Accessible & fast** — AA contrast **MEASURED, not eyeballed** (run the scorer in
+  `references/contrast-check.md`; it's a hard gate before deploy), focus states, semantic HTML,
+  Core Web Vitals green.
 
 See `references/playbook.md` for the conversion architecture (section sequence, hero formula,
 proof patterns, CTA rules) — load it before phase 2.

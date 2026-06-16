@@ -18,8 +18,9 @@ hand.
    hierarchy. Kill orphans/widows on key lines.
 2. **Spacing & rhythm** — generous, consistent vertical rhythm; sections breathe; related things
    group, unrelated things separate. Optical alignment, not just mathematical.
-3. **Colour & contrast** — AA minimum (4.5:1 body, 3:1 large/UI). One confident accent; everything
-   else restrained. No muddy greys on greys.
+3. **Colour & contrast** — AA minimum (4.5:1 body, 3:1 large/UI). **Measure, don't eyeball:** run
+   the WCAG scorer in `references/contrast-check.md` and fix every miss (watch for broad `color`
+   rules overriding buttons via specificity). One confident accent; everything else restrained.
 4. **Responsive** — verify 390 / 768 / 1440. Nothing overflows, nothing cramped, the hero CTA is
    above the fold on mobile.
 5. **States** — visible focus rings, hover/active/disabled on every interactive element, empty/

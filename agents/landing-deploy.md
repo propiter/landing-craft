@@ -21,12 +21,15 @@ browser link when authentication is genuinely required.
 2. **Auth (one time only):** `vercel whoami`. If it returns a username, you're already authed →
    skip straight to deploy (this is the "after the first time, fully automatic" case).
    If NOT authed:
-   - Run **`vercel login` in the BACKGROUND** (it blocks on "Waiting for authentication...").
-   - Read its output — it prints `Visit https://vercel.com/oauth/device?user_code=XXXX`.
-   - Give the user **only that link**, framed simply: *"Abrí esto en tu navegador y aprobá el
-     acceso 👉 <url>"*. They click + approve in the browser. No terminal, no copy-pasting a token.
-   - The background process completes the moment they approve. Poll `vercel whoami` (every few
-     seconds) until it returns a user, then continue. Credentials persist — this never repeats.
+   - Run **`vercel login` in the BACKGROUND**. It **auto-opens the user's default browser** to the
+     device-approval page with the code pre-filled — they just click *Approve*. It then blocks on
+     "Waiting for authentication...".
+   - Tell the user simply: *"Se abrió tu navegador para autorizar Vercel — aprobá ahí y listo."*
+     ONLY if the browser did not open, give the printed `Visit https://…/oauth/device?user_code=XXXX`
+     link as a FALLBACK. Do NOT instruct them to open/paste the link by hand — opening it manually
+     can prompt for the code instead of auto-filling it; the auto-opened tab is the one that works.
+   - The background process completes the instant they approve. Poll `vercel whoami` until it
+     returns a user; the session then persists forever (every future deploy is fully automatic).
 3. **Deploy** from the build dir (static → folder with `index.html`; Next.js → project root):
    - **Name the project** sensibly from the brief (e.g. `whitelabel-landing`). Create it FIRST —
      `vercel project add <name>` — because `--project` needs an existing project. Then:

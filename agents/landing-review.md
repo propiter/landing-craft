@@ -15,7 +15,12 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
 ## Do
 1. **Render** the running landing at 390, 768, 1440 (start the dev server if needed). Screenshot
    each. Look — don't guess.
-2. **Score the conversion heuristics** from the playbook:
+2. **Contrast gate (MANDATORY — never skip, never deploy without it).** Inject the WCAG scorer from
+   `references/contrast-check.md` via `page.evaluate` at 1440 + 390, plus hover/focus states. ANY
+   element below AA (4.5:1 normal / 3.0:1 large or UI) is an automatic **FAIL** — route the fix to
+   `landing-polish` and re-score until the failure list is empty. Report the score table. (This
+   catches the silent specificity bug where a broad `color` rule overrides a button.)
+3. **Score the conversion heuristics** from the playbook:
    - 5-second test passes on the hero alone (what/who/why/next).
    - Exactly one primary CTA identity, repeated.
    - Concrete proof above the mid-point.
@@ -24,7 +29,7 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
    - No AI-slop tells in copy or layout.
    - AA contrast, visible focus, reduced-motion honored.
    - LCP is the hero.
-3. **Score the craft**: typography, spacing, hierarchy, colour, responsive integrity, motion
+4. **Score the craft**: typography, spacing, hierarchy, colour, responsive integrity, motion
    restraint.
 
 ## Output
