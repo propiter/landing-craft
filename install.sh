@@ -33,11 +33,11 @@ fi
 # Copy the skill (with its references), the 8 sub-agents, and the 4 slash-commands.
 cp -R "$SRC/skills/landing-craft" "$CLAUDE_DIR/skills/"
 cp "$SRC"/agents/landing-*.md     "$CLAUDE_DIR/agents/"
-cp "$SRC"/commands/landing-*.md   "$CLAUDE_DIR/commands/"
+cp "$SRC"/commands/landing*.md    "$CLAUDE_DIR/commands/"
 
 say "Installed:"
 say "  skill    → skills/landing-craft"
 say "  agents   → $(ls "$SRC"/agents/landing-*.md | wc -l | tr -d ' ') sub-agents"
-say "  commands → /landing-new  /landing-build  /landing-review  /landing-ship"
+say "  commands → /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
 echo
 say "Done. In Claude Code, try:  /landing-new \"<your product>\""

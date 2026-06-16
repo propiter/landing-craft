@@ -1,10 +1,10 @@
 ---
 name: landing-craft
-description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that orchestrates specialist sub-agents — strategy, copy, visual design, build, motion, polish, SEO, review — to ship a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated. Next.js by default; framework-agnostic."
+description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that ASKS the questions it needs (intake), then autonomously runs strategy, copy, visual design, build, motion, polish, SEO and review, and DEPLOYS the result (GitHub + Vercel) — shipping a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Next.js by default; framework-agnostic."
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Landing Craft
@@ -30,14 +30,16 @@ Every landing this workflow ships must clear four bars. If any fails, it is not 
 ## The Pipeline (the DAG)
 
 ```
-                ┌────────────► copy ──────┐
-  brief ► strategy                         ├─► build ─► motion ─► polish ─┐
-                └────────────► design ─────┘                 build ─► seo ─┴─► review ⭯
+  intake ─► strategy ─┬─► copy ───┐
+   (ASK)              └─► design ──┴─► build ─► motion ─► polish ─┐
+                                            build ─► seo ─────────┴─► review ⭯ ─► deploy
 ```
 
-- **Planning** (cheap, fast, do first): `strategy → {copy, design}`
-- **Production** (the build): `build → motion → polish`, with `seo` in parallel off `build`
+- **Intake** (Phase 0): ASK the user the few questions that change the output, THEN run. Never start blind.
+- **Planning**: `strategy → {copy, design}`
+- **Production**: `build → motion → polish`, with `seo` in parallel off `build`
 - **Gate**: `review` renders and critiques; it LOOPS back to polish/build until it passes.
+- **Deploy** (Phase 9): publish to GitHub (gh) + ship to Vercel — hand the user a live URL. In auto mode, SEO and deploy are NOT optional.
 
 ## Phase → Sub-agent map
 
@@ -46,6 +48,7 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 
 | Phase | Sub-agent | Loads / leans on | Produces |
 |-------|-----------|------------------|----------|
+| 0. Intake | *orchestrator* | `AskUserQuestion` | the brief — product, audience, the one action, tone, framework, proof, deploy target |
 | 1. Strategy | `landing-strategy` | `marketing-strategy` | positioning, ICP/JTBD, core promise, offer, proof inventory |
 | 2. Copy | `landing-copy` | `brand-voice` | section-by-section message + conversion copy (anti-slop) |
 | 3. Design | `landing-design` | Impeccable, `web-assets` | visual direction (DESIGN.md): type/colour/space scale, component style, references |
@@ -54,11 +57,15 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 | 6. Polish | `landing-polish` | Impeccable, a11y | aesthetic pass, responsive, contrast, focus states |
 | 7. SEO | `landing-seo` | `seo-geo` | meta/OG/schema/perf, Core Web Vitals, llms.txt |
 | 8. Review | `landing-review` | `design-review-loop` | render at 390/768/1440 + conversion heuristics → pass/fail + fixes |
+| 9. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth |
 
 ## How to run it
 
 Detect the mode from the request; if unclear, ask once.
 
+- **`/landing <prompt>`** → the flagship. INTAKE first (ask the few questions that matter via
+  `AskUserQuestion`), then run EVERY phase autonomously through review, then DEPLOY. Hands you a
+  live URL. This is the "one prompt → ask what's needed → build → deployed" flow.
 - **`/landing-new <brief>`** → run Planning only (strategy → copy + design), then STOP and show the
   plan + visual direction for approval before building.
 - **`/landing-build`** → run Production (build → motion → polish, + seo) on the approved plan.
@@ -68,13 +75,37 @@ Detect the mode from the request; if unclear, ask once.
 **Interactive vs Auto:** default to Interactive — pause after each phase, show the artifact, ask
 "¿seguimos o ajustamos?". Switch to Auto only when the user asks for speed.
 
-## The brief — what you need before phase 1
+## Phase 0 — Intake (ASK before you build)
 
-Never start from nothing. Collect (ask the user, or infer + confirm): **product** (what it does),
-**audience** (who buys), **the one action** you want them to take, **tone/brand** (or "infer it"),
-**framework** (default Next.js + Tailwind), and any **proof** (logos, numbers, testimonials). If
-the user can't answer the strategy questions, that's fine — `landing-strategy` will draft them and
-you confirm. The user said they don't know marketing; that means YOU run strategy, not skip it.
+Never start blind. When the request is just "quiero una landing de X", FIRST ask the few questions
+that actually change the output — use `AskUserQuestion` (one round, 3–5 questions), then run
+autonomously. If the user gives a URL or an existing site, SCRAPE it first (Firecrawl/WebFetch) and
+only ask what you couldn't infer. Ask for:
+
+1. **Producto** — qué hace y qué problema resuelve.
+2. **Audiencia** — quién compra / a quién le hablás.
+3. **La acción** — qué querés que haga el visitante (agendar, comprar, registrarse…).
+4. **Tono/marca** — colores, logo, referencias, o "inferilo del producto".
+5. **Framework** — Next.js (default) u otro.
+6. **Prueba/assets** — logos, números, testimonios, links.
+7. **Deploy** — ¿publico a Vercel al terminar? (preview por defecto, prod al aprobar).
+
+If the user can't answer the marketing questions, that's fine — draft them in strategy and confirm.
+They don't need to know marketing; that's the workflow's job. NEVER skip strategy.
+
+## Phase 9 — Deploy (hands-off; the user only opens a URL)
+
+After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing but open a live URL.
+
+1. **GitHub** — if `gh` is authenticated, create + push the repo (`gh repo create … --source … --push`).
+2. **Vercel** — if the `vercel` CLI is missing, **install it** (`npm i -g vercel`). Then check
+   `vercel whoami`; if not authenticated, the user must auth ONCE — have them run `! vercel login`
+   in-session and click the **link** it prints (interactive). Once authed, deploy from the build dir:
+   `vercel deploy` → **preview URL** by default (safe — they review it live); `vercel --prod` to
+   promote when they approve. Static build → deploy the build folder; Next.js → the project root.
+3. Hand back the **live preview URL** + the repo URL, and "approve → promuevo a producción".
+
+Never auto-promote a first draft straight to production. Preview first, prod on approval.
 
 ## Artifacts & continuity
 

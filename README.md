@@ -5,14 +5,14 @@
 **SDD, but for landing pages.** A phased, multi-agent workflow that ships a modern, elegant,
 intuitive, **high-converting** landing — one that does *not* look AI-generated.
 
-You say *"armame una landing para X"*. It runs strategy → copy → design → build → motion → polish
-→ SEO → review, delegating each phase to a specialist sub-agent, and doesn't call it done until it
-**looks crafted and sells.**
+You say *"armame una landing para X"*. It **asks the few questions it needs**, then autonomously
+runs strategy → copy → design → build → motion → polish → SEO → review — and **deploys it** (GitHub
++ Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.0.0-black.svg)
-![Agents](https://img.shields.io/badge/sub--agents-8-ff5d01.svg)
-![Commands](https://img.shields.io/badge/commands-4-22c55e.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-black.svg)
+![Agents](https://img.shields.io/badge/sub--agents-9-ff5d01.svg)
+![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
 
 </div>
 
@@ -33,31 +33,34 @@ curl -fsSL https://raw.githubusercontent.com/propiter/landing-craft/main/install
 /plugin install landing-craft@landing-craft
 ```
 
-The installer copies one skill, 8 sub-agents, and 4 slash-commands into `~/.claude/`. No sudo, no
+The installer copies one skill, 9 sub-agents, and 5 slash-commands into `~/.claude/`. No sudo, no
 global npm, nothing runs in the background. Re-run anytime to update.
 
 ## Use it
 
 ```bash
-/landing-new "API de facturación DIAN para developers"   # strategy + copy + design → review the plan
+/landing "una landing para mi SaaS de facturación"       # ★ flagship: asks → builds → DEPLOYS (live URL)
+/landing-new "API de facturación DIAN para developers"   # planning only → review the plan
 /landing-build                                            # build + motion + polish + SEO
 /landing-review                                           # render @ 390/768/1440, score, fix
-/landing-ship "<your product>"                            # full auto, end to end
+/landing-ship "<your product>"                            # full auto (no deploy)
 ```
 
-You don't need to know marketing — that's the strategy agent's job. Give it the product and who
-it's for; it drafts the rest and you confirm.
+You don't need to know marketing — that's the strategy agent's job. With **`/landing`** you don't
+even need a brief: it asks the few questions it needs, builds autonomously, and hands you a live
+URL (it installs the Vercel CLI if missing and guides the one-time login).
 
 ## The pipeline
 
 ```
-                ┌────────────► copy ──────┐
-  brief ► strategy                         ├─► build ─► motion ─► polish ─┐
-                └────────────► design ─────┘                 build ─► seo ─┴─► review ⭯
+  intake ─► strategy ─┬─► copy ───┐
+   (ASK)              └─► design ──┴─► build ─► motion ─► polish ─┐
+                                            build ─► seo ─────────┴─► review ⭯ ─► deploy
 ```
 
 | # | Phase | Sub-agent | What it guarantees |
 |---|-------|-----------|--------------------|
+| 0 | Intake | *orchestrator* | Asks the few questions that change the output — never builds blind |
 | 1 | Strategy | `landing-strategy` | Positioning, ICP, core promise, offer — the foundation |
 | 2 | Copy | `landing-copy` | Anti-slop conversion copy; the 5-second test passes |
 | 3 | Design | `landing-design` | A deliberate visual system — the anti-"made with AI" phase |
@@ -66,6 +69,7 @@ it's for; it drafts the rest and you confirm.
 | 6 | Polish | `landing-polish` | The craft pass — type, spacing, contrast, responsive, states |
 | 7 | SEO | `landing-seo` | Meta, OG, JSON-LD, Core Web Vitals, `llms.txt` |
 | 8 | Review | `landing-review` | Renders & scores craft + conversion; loops until it passes |
+| 9 | Deploy | `landing-deploy` | Pushes to GitHub + deploys to Vercel; installs the CLI & guides first-time login |
 
 ## The four bars (enforced every phase)
 
@@ -91,8 +95,8 @@ landing-craft/
 ├── skills/landing-craft/
 │   ├── SKILL.md              the orchestrator brain — the pipeline & delegation
 │   └── references/playbook.md the conversion architecture (sections, hero, CTA, proof)
-├── agents/                   8 specialist sub-agents (one per phase)
-├── commands/                 /landing-new · /landing-build · /landing-review · /landing-ship
+├── agents/                   9 specialist sub-agents (one per phase, incl. deploy)
+├── commands/                 /landing · /landing-new · /landing-build · /landing-review · /landing-ship
 └── install.sh                one-command install into ~/.claude
 ```
 
