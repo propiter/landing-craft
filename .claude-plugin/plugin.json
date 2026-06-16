@@ -1,0 +1,24 @@
+{
+  "name": "landing-craft",
+  "description": "End-to-end landing-page workflow for AI agents. Orchestrates 8 specialist sub-agents — strategy, copy, design, build, motion, polish, SEO, review — through a phased pipeline to ship a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated. Triggers: build/create a landing page, marketing site, product page, sales page, hero, waitlist, 'armame una landing', 'landing que venda'. Commands: /landing-new, /landing-build, /landing-review, /landing-ship. Next.js + Tailwind by default; framework-agnostic.",
+  "version": "1.0.0",
+  "author": {
+    "name": "propiter"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "landing-page",
+    "marketing",
+    "conversion",
+    "copywriting",
+    "ui",
+    "ux",
+    "design",
+    "nextjs",
+    "workflow",
+    "sub-agents"
+  ],
+  "skills": [
+    "./skills/landing-craft"
+  ]
+}
