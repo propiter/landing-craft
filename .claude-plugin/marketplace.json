@@ -12,7 +12,7 @@
     {
       "name": "landing-craft",
       "source": "./",
-      "description": "Orchestrates 8 specialist sub-agents (strategy → copy → design → build → motion → polish → seo → review) to build a modern, elegant, intuitive, high-converting landing. Reuses the design stack (marketing-strategy, brand-voice, motion-craft, seo-geo, design-review-loop, Impeccable). Next.js by default; framework-agnostic.",
+      "description": "Leads with an autonomous market study, then orchestrates 12 sub-agents (init → research → strategy → architecture → copy → design → build (multi-page) → motion → polish → seo → review → deploy) to ship a modern, high-converting, multi-page site that doesn't look AI-generated. Bundles the design stack (motion-craft, marketing-strategy, brand-voice, seo-geo, design-review-loop, web-assets) + fetches Impeccable; generates its own assets; analytics-ready; Next.js + Tailwind; Claude Code · OpenCode · Cursor.",
       "version": "1.8.0",
       "author": {
         "name": "propiter"
