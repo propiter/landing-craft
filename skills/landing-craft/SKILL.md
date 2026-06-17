@@ -1,10 +1,10 @@
 ---
 name: landing-craft
-description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that ASKS the questions it needs (intake), then autonomously runs strategy, copy, visual design, build, motion (configurable depth — subtle/medium/rich, with smooth scroll, card hovers, magnetic/tilt via Motion+GSAP+Lenis), polish, SEO and review, and DEPLOYS the result (GitHub + Vercel) — shipping a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Next.js + Tailwind by default (no hardcoded tokens); remembers your style preferences."
+description: "Trigger: build/create/make a landing page, marketing site, product page, hero section, sales page, waitlist, 'armame una landing', 'landing que venda', 'una web que no parezca hecha con IA'. An end-to-end, phased workflow that LEADS with an autonomous MARKET STUDY (scrapes the product + competitors, mines keywords/intent, profiles the audience — no interrogation), then runs research → strategy → multi-page architecture → copy → visual design → build → motion (configurable depth — subtle/medium/rich, scroll-reactive via Motion+GSAP+Lenis) → polish → SEO → review, and DEPLOYS the result (GitHub + Vercel) — shipping a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Next.js + Tailwind by default (no hardcoded tokens); remembers your style preferences."
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Landing Craft
@@ -34,16 +34,19 @@ Every landing this workflow ships must clear FIVE bars. If any fails, it is not 
 ## The Pipeline (the DAG)
 
 ```
-  intake ─► strategy ─┬─► copy ───┐
-   (ASK)              └─► design ──┴─► build ─► motion ─► polish ─┐
-                                            build ─► seo ─────────┴─► review ⭯ ─► deploy
+  research ─► strategy ─► architecture ─┬─► copy ───┐
+  (market study)                        └─► design ─┴─► build (multi-page) ─► motion ─► polish ─┐
+                                                            build ─► seo ──────────────────────┴─► review ⭯ ─► deploy
 ```
 
-- **Intake** (Phase 0): ASK the user the few questions that change the output, THEN run. Never start blind.
-- **Planning**: `strategy → {copy, design}`
-- **Production**: `build → motion → polish`, with `seo` in parallel off `build`
-- **Gate**: `review` renders and critiques; it LOOPS back to polish/build until it passes.
-- **Deploy** (Phase 9): publish to GitHub (gh) + ship to Vercel — hand the user a live URL. In auto mode, SEO and deploy are NOT optional.
+- **Research** (Phase 0): an AUTONOMOUS market study — scrape the product + competitors, mine
+  keywords/intent, profile the audience's emotional drivers, collect alive design references,
+  validate positioning. **The skill LEADS; it does NOT interrogate the user.** (`landing-research`)
+- **Architecture** (after strategy): the page map (multi-page) + the UNIQUE per-theme section plan.
+- **Planning**: `strategy → {copy, design}`, all grounded in the research.
+- **Production**: `build` (multi-page) → `motion` → `polish`, with `seo` (researched keywords) off `build`.
+- **Gate**: `review` renders and critiques (5 bars incl. ALIVE); LOOPS back until it passes.
+- **Deploy** (final): GitHub + Vercel — a live URL. Research, SEO and deploy are NOT optional.
 
 ## Phase → Sub-agent map
 
@@ -52,24 +55,26 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 
 | Phase | Sub-agent | Loads / leans on | Produces |
 |-------|-----------|------------------|----------|
-| 0. Intake | *orchestrator* | `AskUserQuestion` | the brief — product, audience, the one action, tone, framework, proof, deploy target |
-| 1. Strategy | `landing-strategy` | `marketing-strategy` | positioning, ICP/JTBD, core promise, offer, proof inventory |
-| 2. Copy | `landing-copy` | `brand-voice` | section-by-section message + conversion copy (anti-slop) |
-| 3. Design | `landing-design` | Impeccable, `web-assets` | visual direction (DESIGN.md): type/colour/space scale, component style, references |
-| 4. Build | `landing-build` | the target framework | the actual landing code (Next.js default) |
-| 5. Motion | `landing-motion` | `motion-craft` | reveals, micro-interactions, one hero moment — all reduced-motion safe |
-| 6. Polish | `landing-polish` | Impeccable, a11y | aesthetic pass, responsive, contrast, focus states |
-| 7. SEO | `landing-seo` | `seo-geo` | meta/OG/schema/perf, Core Web Vitals, llms.txt |
-| 8. Review | `landing-review` | `design-review-loop` | render at 390/768/1440 + conversion heuristics → pass/fail + fixes |
-| 9. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth |
+| 0. Research | `landing-research` | `marketing-strategy`, `seo-geo`, Firecrawl, WebSearch | `research.md` — product/competitor teardown, keywords/intent, emotional drivers, alive design refs, the GAP |
+| 1. Strategy | `landing-strategy` | `marketing-strategy` | positioning, ICP/JTBD, core promise, offer (grounded in research) |
+| 2. Architecture | `landing-architecture` | `site-architecture` | the page map (multi-page) + the UNIQUE per-theme section plan |
+| 3. Copy | `landing-copy` | `brand-voice` | section + page copy, research-backed, human (anti-slop) |
+| 4. Design | `landing-design` | `alive-not-generic`, Impeccable, `web-assets` | DESIGN.md: signature visual, real imagery, type/colour/space — NOT generic |
+| 5. Build | `landing-build` | Next.js + Tailwind | the multi-page site (tokens in tailwind.config, no hardcoded) |
+| 6. Motion | `landing-motion` | `motion-craft`, `animation-levels` | scroll-reactive motion at the chosen intensity, reduced-motion safe |
+| 7. Polish | `landing-polish` | Impeccable, `contrast-check` | craft pass, responsive, AA contrast (measured), focus states |
+| 8. SEO | `landing-seo` | `seo-geo` | meta/OG/JSON-LD/CWV/llms.txt per page, targeting the researched keywords |
+| 9. Review | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic` | render + score the 5 bars + contrast gate → pass/fail |
+| 10. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth |
 
 ## How to run it
 
 Detect the mode from the request; if unclear, ask once.
 
-- **`/landing <prompt>`** → the flagship. INTAKE first (ask the few questions that matter via
-  `AskUserQuestion`), then run EVERY phase autonomously through review, then DEPLOY. Hands you a
-  live URL. This is the "one prompt → ask what's needed → build → deployed" flow.
+- **`/landing <prompt>`** → the flagship (DEEP mode). The skill **LEADS**: it researches the market
+  (scrape, competitors, keywords, audience), then runs EVERY phase autonomously — research →
+  strategy → architecture → copy → design → build (multi-page) → motion → polish → seo → review →
+  DEPLOY — **without interrogating you**. Hands you a live, market-current, multi-page site.
 - **`/landing-new <brief>`** → run Planning only (strategy → copy + design), then STOP and show the
   plan + visual direction for approval before building.
 - **`/landing-build`** → run Production (build → motion → polish, + seo) on the approved plan.
@@ -79,28 +84,23 @@ Detect the mode from the request; if unclear, ask once.
 **Interactive vs Auto:** default to Interactive — pause after each phase, show the artifact, ask
 "¿seguimos o ajustamos?". Switch to Auto only when the user asks for speed.
 
-## Phase 0 — Intake (ASK before you build)
+## Phase 0 — Lead, don't interrogate (the skill is in charge)
 
-First, **load the user's saved style profile** from engram (`mem_search` topic
-`landing-craft/style-profile`): animation intensity (default `medium`), framework = Next.js +
-Tailwind ALWAYS, no hardcoded tokens. Use these as defaults — don't re-ask what's already known.
+The user already said what they want ("quiero una landing de X"). You are the **product lead** — you
+do NOT run an interview. Gather context by RESEARCHING, not by asking:
 
-When the request is just "quiero una landing de X", ask the few questions that actually change the
-output — `AskUserQuestion` (one round, 3–5). If the user gives a URL/existing site, SCRAPE it first
-(Firecrawl/WebFetch) and only ask what you couldn't infer. Ask for:
+1. **Load the saved style profile** (`mem_search` `landing-craft/style-profile`): animation intensity
+   (default `medium`), Next.js + Tailwind always, no hardcoded tokens. Use as defaults — don't re-ask.
+2. **Infer everything you can** from the prompt; if a URL/product exists, the **research phase scrapes
+   it** — never ask what you can scrape.
+3. **Ask AT MOST one short thing, and only if it's genuinely blocking** (e.g. no product and no way to
+   infer the offer). Anything you can reasonably decide, DECIDE IT — you're the lead.
+4. Then run the **full deep pipeline autonomously, end to end** — research → strategy → architecture →
+   copy → design → build (multi-page) → motion → polish → seo → review → deploy — without pausing to ask.
 
-1. **Producto** — qué hace y qué problema resuelve.
-2. **Audiencia** — quién compra / a quién le hablás.
-3. **La acción** — qué querés que haga (agendar, comprar, registrarse…).
-4. **Tono/marca** — colores, logo, referencias, o "inferilo del producto".
-5. **Nivel de animación** — `menos` / `medio` (default) / `más`. Pre-fill from the saved profile.
-6. **Prueba/assets** — logos, números, testimonios, links.
-7. **Deploy** — ¿publico a Vercel al terminar? (preview por defecto).
-
-**Do NOT ask about framework** — it's Next.js + Tailwind always (switch only if the user explicitly
-says so). If the user states a lasting preference ("siempre con muchas animaciones"), **update the
-style profile** (`mem_save` same topic key) so it sticks across future landings. If they can't
-answer the marketing questions, draft them in strategy and confirm — never skip strategy.
+**Tokens are not a constraint** — deliver a complete, market-current product, not a quick HTML page.
+A landing is the market study + a multi-page site, not a single file. If the user states a lasting
+preference ("siempre con muchas animaciones"), `mem_save` it to the profile. Never skip research.
 
 ## Phase 9 — Deploy (hands-off; the user only opens a URL)
 
@@ -148,11 +148,26 @@ not full content, to keep the thread thin.
   `references/contrast-check.md`; it's a hard gate before deploy), focus states, semantic HTML,
   Core Web Vitals green.
 
-See `references/playbook.md` for the conversion architecture (section sequence, hero formula,
-proof patterns, CTA rules) — load it before phase 2.
+## References (load on demand)
+
+- `references/market-research.md` *(the `landing-research` agent's method)* + `seo-geo` — the study.
+- `references/site-architecture.md` — multi-page map + per-theme unique sections (Architecture phase).
+- `references/alive-not-generic.md` — the 5th bar: real imagery, signature visual, scroll-reactive
+  motion, warmth. Load in design + motion + review.
+- `references/playbook.md` — conversion architecture (hero formula, proof, CTA rules).
+- `references/animation-levels.md` — subtle/medium/rich motion + library stack.
+- `references/contrast-check.md` — the WCAG gate (measured, not eyeballed).
+
+## Portability — works in Claude Code AND OpenCode
+
+All content is plain Markdown (skills/agents/commands) — platform-agnostic. The installers place it
+in `~/.claude/` for Claude Code; for OpenCode, the same skills/agents/commands load from its config
+(set `CLAUDE_CONFIG_DIR` or use the OpenCode skills/command dirs). Delegation uses the host's
+sub-agent primitive (`Task`/`task`), so the orchestration runs the same on both.
 
 ## Output Contract
 
-When the workflow finishes, report: the live preview URL (dev server), the phases run, the
-positioning one-liner, the primary CTA, the review verdict (what passed / what was fixed), and the
-remaining follow-ups. Never declare "done" until `landing-review` returns a pass.
+When the workflow finishes, report: the **live URL**, the pages built (multi-page), the phases run,
+the positioning angle + the gap it owns (from research), the primary CTA, the review verdict
+(5 bars), and follow-ups. Never declare "done" until `landing-research` grounded it and
+`landing-review` returns a pass.
