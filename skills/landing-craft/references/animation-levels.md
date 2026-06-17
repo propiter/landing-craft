@@ -16,8 +16,11 @@ duration, restraint).
   healthcare, legal, enterprise. Motion supports the offer, never dominates it.
 - **NEVER auto-drop to `subtle`.** The 5th bar is ALIVE — a dead-quiet landing fails it. Use
   `subtle` ONLY when the user explicitly asks for less at the start (or an a11y/perf mandate).
-- **NEVER auto-reach `ultra`.** It's powerful but easily *recargada* (overloaded) — explicit
-  request only, for the right niche, with the guardrails in its section below.
+- **Auto-reach `ultra` ONLY for spectacle-native niches** — where motion IS the product/expectation:
+  creative & interactive studios, awwwards-style or experimental portfolios, web3/gaming/generative-
+  art, immersive product launches. For everything else `ultra` is explicit-only — it's easily
+  *recargada* (overloaded), so never reach for it as a generic "more is better". The guardrails in
+  its section are non-negotiable at every use.
 - A saved user preference (below) overrides this rule. Reduced-motion is honored at every level.
 
 ## The stack (Next.js + Tailwind — researched, current)
@@ -68,10 +71,11 @@ being asked when the brand is bold/creative/consumer/launch/portfolio (see "How 
 - Optional Lottie/Rive for one hero illustration; particles only if on-brand.
 - Still 60fps, still one signal per viewport — richness ≠ chaos. Curate, don't carpet-bomb.
 
-## Level 3 — `ultra` (experimental) — explicit request ONLY, NEVER auto
-The maximal tier — for creative studios, portfolios, launches, awwwards-style sites, web3/gaming/
-AI-forward brands that WANT to be a spectacle. Everything in `rich`, **plus** (curate HARD — 1–2 hero
-moments, never everywhere):
+## Level 3 — `ultra` (experimental) — auto ONLY for spectacle-native niches, else explicit
+The maximal tier — for creative & interactive studios, experimental/awwwards portfolios, launches,
+web3/gaming/generative-art brands that WANT to be a spectacle. For THOSE niches, where motion IS the
+product, the design phase may select `ultra` on its own; for every other niche it's explicit-only.
+Everything in `rich`, **plus** (curate HARD — 1–2 hero moments, never everywhere):
 - **Moving backgrounds**: animated WebGL/shader gradients, particle/aurora fields, flowing mesh, or
   grids that react to scroll or cursor.
 - **Cursor-driven scenes**: a custom cursor, trailing/following elements, hover-warped imagery, a

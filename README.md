@@ -12,7 +12,7 @@ design → build → motion → polish → SEO → review → **deploy** (GitHub
 interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.10.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.10.1-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
@@ -135,13 +135,14 @@ If any bar fails, it isn't done.
 
 Not flat, not chaotic — a **dial**. **Default medium**, and it **auto-escalates to `rich` when the
 niche is bold** (creative, consumer, launch, portfolio). It **never** drops to `subtle` on its own
-(that would fail the ALIVE bar) and **never** reaches `ultra` on its own — both are explicit-only.
-Ask for `menos` / `más` / `ultra` and it adjusts (and remembers next time):
+(that would fail the ALIVE bar), and reaches `ultra` on its own **only for spectacle-native niches**
+(creative/interactive studios, experimental portfolios, web3/gaming) — elsewhere `ultra` is
+explicit. Ask for `menos` / `más` / `ultra` and it adjusts (and remembers next time):
 
 - **subtle** *(ask for it)* — hero reveal, scroll fades, button micro-interactions.
 - **medium** *(default)* — + Lenis smooth scroll, section reveals, **card hover depth**, number counters, CTA glow, light cursor flair on the CTA.
 - **rich** *(auto for bold niches)* — + GSAP scroll-scrub/parallax, magnetic buttons, 3D-tilt cards, spotlight/beams (Aceternity / Magic UI).
-- **ultra** *(ask for it)* — moving WebGL backgrounds, cursor-driven scenes, scroll-3D — for creative/launch sites. Guardrailed: CWV green, reduced-motion safe, never buries the offer.
+- **ultra** *(auto for spectacle-native niches, else ask)* — moving WebGL backgrounds, cursor-driven scenes, scroll-3D. Guardrailed: CWV green, reduced-motion safe, never buries the offer.
 
 Built on **Motion + GSAP (free) + Lenis** (+ Three / R3F / Rive at `ultra`), Next.js + Tailwind, every level `prefers-reduced-motion` safe.
 

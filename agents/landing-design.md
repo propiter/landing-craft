@@ -42,8 +42,10 @@ note where the build phase should invoke them.
 7. **Set the ANIMATION LEVEL** (per `references/animation-levels.md` → "How the level is chosen").
    Default `medium`; **escalate to `rich`** when this brand/niche is bold (creative/consumer/launch/
    portfolio) — motion is part of their story. Stay `medium` for trust-first categories (B2B/fintech/
-   health/enterprise). NEVER pick `subtle` or `ultra` unless the user explicitly asked (a saved
-   preference overrides). State the chosen level + one line of why in `design.md` so motion applies it.
+   health/enterprise). NEVER pick `subtle` unless asked. Pick `ultra` ONLY for spectacle-native
+   niches (creative/interactive studios, experimental portfolios, web3/gaming/generative-art,
+   immersive launches) where motion IS the product — otherwise `ultra` is explicit-only. A saved
+   preference overrides. State the chosen level + one line of why in `design.md` so motion applies it.
 
 ## Output
 Write `landing/design.md` with a copy-pasteable **Tailwind theme** (`tailwind.config` →

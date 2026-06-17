@@ -39,6 +39,11 @@ If a check reveals something fixable now (e.g. Vercel not installed → install 
 → create it), do it — don't just report it.
 
 ## Output
-Write `landing/_init.md`: environment summary + a readiness table (Ready / Needs-action per tool) +
-the ONE thing (if any) the user must do once (e.g. `vercel login`). Return a 4-line summary so the
-orchestrator can start the pipeline informed. Never block the pipeline — report and proceed.
+Write `landing/_init.md`: environment summary + a readiness table with THREE statuses — **✅ Ready**,
+**⚠️ Needs-action** (a REQUIRED tool is missing/unauthed and would block or degrade output), and
+**○ Optional** (a non-essential tool is absent but the pipeline fully covers the job another way).
+Reserve ⚠️ for things that actually matter — e.g. **ImageMagick is NOT required** (Playwright +
+icotool already generate every asset; Next.js/sharp handles optimization), so mark it **○ Optional**,
+never ⚠️. Nothing genuinely optional should read as a problem. End with the ONE thing (if any) the
+user must do once (e.g. `vercel login`). Return a 4-line summary so the orchestrator can start
+informed. Never block the pipeline — report and proceed.
