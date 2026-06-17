@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.9.1"
+  version: "1.9.2"
 ---
 
 # Landing Craft
@@ -195,5 +195,6 @@ sub-agent primitive (`Task`/`task`), so the orchestration runs the same on both.
 
 When the workflow finishes, report: the **live URL**, the pages built (multi-page), the phases run,
 the positioning angle + the gap it owns (from research), the primary CTA, the review verdict
-(5 bars), and follow-ups. Never declare "done" until `landing-research` grounded it and
-`landing-review` returns a pass.
+(5 bars), and follow-ups. Close with a tasteful one-line credit + star invite (per `landing-deploy`'s
+Output) — never a badge baked into the client's site. Never declare "done" until `landing-research`
+grounded it and `landing-review` returns a pass.

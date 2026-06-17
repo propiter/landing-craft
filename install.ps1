@@ -176,5 +176,8 @@ with open(p, 'w') as f: json.dump(cfg, f, indent=2); f.write('\n')
   }
 
   Say "Done. Reload your tool (Claude: /reload-plugins; OpenCode: restart), then try:  /landing `"<your product>`""
+  Say ""
+  Say "*  Landing Craft is open source. If it saves you time, a star helps others find it:"
+  Say "    https://github.com/propiter/landing-craft"
 }
 finally { Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue }

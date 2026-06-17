@@ -165,3 +165,6 @@ PYEOF
 fi
 
 say "Done. In your tool, reload (Claude: /reload-plugins, OpenCode: restart), then try:  /landing \"<your product>\""
+say ""
+say "⭐  Landing Craft is open source. If it saves you time, a star helps others find it:"
+say "    https://github.com/propiter/landing-craft"
