@@ -37,10 +37,13 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
    reference them. **NO hardcoded hex/px and NO inline `<style>` token dumps** — the theme is the
    single source of truth. (The motion phase adds `motion`/`gsap`/`lenis` per the intensity level.)
 2. **Generate assets into `public/` (use `web-assets`) — see `references/assets.md`.** Create
-   `public/`, GENERATE the signature hero visual (a crafted SVG or an HTML scene rendered via
-   Playwright), the OG card, favicons (icotool), and decorative SVGs. **Install Playwright if missing**
-   (`npx playwright install chromium`). Fetch the real logo/photos research found; otherwise leave
-   on-brand **named placeholders** and tell the user to swap them. NEVER point an `<img>` at a missing file.
+   `public/` and GENERATE, as swappable named files: the signature hero visual (a crafted SVG or an
+   HTML scene rendered via Playwright), the OG card (`og-image.png`), an on-brand **logo/wordmark**
+   (`logo.svg`), the **branded favicon set derived from it** (icotool) — **NEVER the framework / Next /
+   Vercel default favicon** — and decorative SVGs. **Install Playwright if missing**
+   (`npx playwright install chromium`). Fetch the real logo/photos research found; otherwise the
+   GENERATED on-brand assets stand in and the user swaps the file later (no code change). NEVER point
+   an `<img>` at a missing file, and never ship an unbranded site (default favicon = debt).
 3. **Build section by section** in the playbook order. Semantic HTML (`header`, `section`, `main`,
    `nav`), real headings hierarchy, one `<h1>`.
 4. **Mobile-first.** The hero promise + primary CTA must land above the fold at 390px.

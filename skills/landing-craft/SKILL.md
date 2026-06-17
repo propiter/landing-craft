@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.9.0"
+  version: "1.9.1"
 ---
 
 # Landing Craft
@@ -179,9 +179,10 @@ not full content, to keep the thread thin.
   consent, working forms (internal `/api/contact` route + env endpoint), sitemap/robots,
   `.env.example`. Research-driven — wire only what the architecture decided, but whatever EXISTS must
   function. Load in seo + build (leave nothing as a dead stub or an unread var).
-- `references/assets.md` — images: GENERATE the signature visual/OG/favicons/SVGs (via bundled
-  `web-assets` + Playwright, **installed if missing**); ASK the user only for real logo/photos. Load
-  in design + build. No `<img>` points at a missing file.
+- `references/assets.md` — images: GENERATE the signature visual, OG card, **logo mark + branded
+  favicon set** (never the framework default) and SVGs (via bundled `web-assets` + Playwright,
+  **installed if missing**) as swappable named files; ASK the user only for real photos. Load in
+  design + build. No `<img>` points at a missing file; nothing ships unbranded.
 
 ## Portability — works in Claude Code AND OpenCode
 

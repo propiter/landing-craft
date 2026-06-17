@@ -19,16 +19,20 @@ From `design.md`'s imagery spec:
   `web-assets` (à la the network-nodes seal we built — tools, not stock). This is the page's soul.
 - **Decorative SVGs** — backgrounds, dividers, motif accents, icon set (inline SVG / lucide-style).
 - **OG / social card** — 1200×630, on-brand, via `web-assets` (HTML → Playwright screenshot).
+- **Logo / wordmark** — an on-brand **SVG mark + wordmark** (the brand's initial/motif as a crafted
+  glyph, not text in a grey box). Ships as a swappable DEFAULT so the site is never unbranded; the
+  user replaces `public/logo.svg` later with **no code change**.
 - **Favicons** — `favicon.ico` (16/32/48 via icotool) + `favicon.svg` + `apple-touch-icon.png` +
-  `manifest` icons, from the logo/mark.
+  `manifest` icons, **derived from that logo mark**. NEVER ship the framework / Next / Vercel default
+  favicon — a default favicon is the #1 "unfinished / template" tell.
 
-**Ask the user (can't be invented):**
-- **Real logo** and **real product/team photos**. First, try to reuse what RESEARCH scraped (if a
-  logo URL was found, fetch it to `public/`). Otherwise: drop a clearly-named **placeholder** that's
-  on-brand (a tasteful SVG, not a grey box) AND tell the user in the final report exactly where to
-  put theirs, e.g. *"replace `public/logo.svg` and `public/images/product-1.jpg` with your real
-  files (same names) — everything else is generated."* Generate good defaults so it never looks
-  broken before they swap.
+**Ask the user (only what truly can't be invented — real photos):**
+- **Real product/team photos.** If RESEARCH scraped a real logo URL, fetch it to `public/logo.svg`
+  (overwriting the generated placeholder). Everything visual ships GENERATED and on-brand, so the
+  site is never broken or unbranded before the user swaps anything.
+- **Swap without touching code.** Every asset is a clearly-named file in `public/` (`logo.svg`,
+  `favicon.ico`, `og-image.png`, `images/product-1.jpg`). Tell the user in the final report exactly
+  which files to replace with their real ones (same names) — no code edit, just drop-in files.
 
 ## 3. Tooling (install if missing — don't fail)
 - **Playwright** for rendering HTML/SVG scenes and the OG card. If browsers aren't present:
@@ -43,6 +47,7 @@ correct dimensions (no CLS), lazy-load below the fold, modern formats (SVG/WebP)
 Generated images must pass the same "not generic / alive" test — no stock-looking filler.
 
 ## Output
-`public/` populated: signature hero visual + OG card + favicons + decorative SVGs generated; real
-logo/photos either fetched or left as named on-brand placeholders with clear swap instructions in
-the final report. No `<img>` points at a missing file.
+`public/` populated: signature hero visual + OG card + **branded favicon set + logo mark** +
+decorative SVGs, ALL generated (never the framework default favicon). Real photos either fetched or
+left as named on-brand placeholders, each with a clear "replace this file — no code change" swap
+instruction in the final report. No `<img>` points at a missing file; nothing ships unbranded.

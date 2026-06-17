@@ -47,6 +47,12 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
    - **Env coherence** — every var in `.env.example` is referenced in `src` (grep). An unread var is
      a FAIL — wire it or remove it.
    - **Assets exist** — every referenced `og:image` / favicon / `<img src>` resolves (no 404).
+   - **All pages built** — every page in `architecture.md`'s map exists as a real route and renders
+     (the build did NOT silently ship home-only). The page map is decided by research/architecture,
+     not by the user — so verify the build delivered ALL of it.
+   - **Branded, not default** — a CUSTOM favicon (NOT the framework / Next / Vercel default), a
+     `logo` asset, and the OG card all exist as files in `public/`. A default favicon or an unbranded
+     site is a FAIL — these always ship generated and swappable.
    - **Analytics/consent IF intended by the strategy** — the GA/GTM script is actually present in
      the rendered DOM and consent gates it. (If the strategy didn't call for analytics, skip.)
    Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.

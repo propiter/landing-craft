@@ -34,9 +34,11 @@ note where the build phase should invoke them.
    use asymmetry so it doesn't read as a template.
 5. **Component style** — buttons, cards, inputs: radius, shadow philosophy, borders, density.
 6. **Imagery — spell out the ASSET LIST** (see `references/assets.md`). Name every image the design
-   needs and tag each **GENERATE** (signature hero visual as crafted SVG / HTML-render, OG card,
-   favicons, decorative SVGs) or **PROVIDE** (real logo, product/team photos). Real product shots /
-   screenshots over generic illustrations; never stock filler. The build phase produces this list.
+   needs and tag each **GENERATE** (signature hero visual as crafted SVG / HTML-render, OG card, the
+   **logo/wordmark mark**, the **branded favicon set** derived from it, decorative SVGs) or
+   **PROVIDE** (real product/team photos only). The logo ships as a GENERATED on-brand placeholder
+   the user can swap later — never the framework default, never an unbranded site. Real product
+   shots / screenshots over generic illustrations; never stock filler. The build phase produces this list.
 
 ## Output
 Write `landing/design.md` with a copy-pasteable **Tailwind theme** (`tailwind.config` →
