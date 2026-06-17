@@ -17,9 +17,11 @@ Read `landing/_brief.md` (and any URL/context given). Load `marketing-strategy` 
 `references/alive-not-generic.md` so your design-reference hunt knows what "alive" means.
 
 ## Your tools for real data
-- **Firecrawl (the user's, if configured)** — scrape pages to clean markdown:
-  `curl -sS -X POST https://firecrawl.lab.whitelabel.lat/v1/scrape -H "Content-Type: application/json" -d '{"url":"<URL>","formats":["markdown"]}'`
-  (fall back to WebFetch if it's down). Use it on the product site and each competitor.
+- **Firecrawl (optional, only if configured)** — if a Firecrawl endpoint is available (a
+  `FIRECRAWL_URL` env var, or a `mcp__firecrawl*` tool), use it to scrape pages to clean markdown:
+  `curl -sS -X POST "$FIRECRAWL_URL/v1/scrape" -H "Content-Type: application/json" -d '{"url":"<URL>","formats":["markdown"]}'`.
+  **Otherwise use `WebFetch` (the default).** Never hardcode a private endpoint. Scrape the product
+  site and each competitor.
 - **WebSearch** — find competitors, keywords, "best <niche> landing page" references, market data.
 
 ## Do — the study (be thorough; tokens are not a constraint here)

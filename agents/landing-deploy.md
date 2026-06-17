@@ -31,7 +31,7 @@ browser link when authentication is genuinely required.
    - The background process completes the instant they approve. Poll `vercel whoami` until it
      returns a user; the session then persists forever (every future deploy is fully automatic).
 3. **Deploy** from the build dir (static → folder with `index.html`; Next.js → project root):
-   - **Name the project** sensibly from the brief (e.g. `whitelabel-landing`). Create it FIRST —
+   - **Name the project** sensibly from the brief (e.g. `acme-landing`). Create it FIRST —
      `vercel project add <name>` — because `--project` needs an existing project. Then:
      `vercel deploy --yes --cwd <build-dir> --project <name>`.
    - Promote with `vercel --prod` ONLY on approval.

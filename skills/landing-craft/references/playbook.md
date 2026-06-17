@@ -34,7 +34,7 @@ the whole page to make the hero's promise true.
 [Trust line] → removes the immediate risk: "Gratis hasta 100/mes. Sin tarjeta."
 [Visual]    → a real product shot / demo / code, never a generic illustration
 ```
-Headline patterns that work: *outcome* ("Factura ante la DIAN como integrarías Stripe"),
+Headline patterns that work: *outcome* ("Cut your month-end close from 5 days to 2 hours"),
 *before→after*, *capability* ("Cobrá en 30 países con una línea de código"). Avoid: "La mejor
 plataforma de…", "Revoluciona tu…", "Solución todo-en-uno".
 

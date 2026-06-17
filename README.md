@@ -10,7 +10,7 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 + Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.6.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.6.1-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
@@ -65,9 +65,9 @@ anytime to update.
 ## Use it
 
 ```bash
-/landing "una landing para mi SaaS de facturación"       # ★ flagship: research → build → DEPLOY (live URL)
+/landing "una landing para mi SaaS"                      # ★ flagship: research → build → DEPLOY (live URL)
 /landing-init                                             # detect env + tooling, bootstrap
-/landing-new "API de facturación DIAN para developers"   # planning only → review the plan
+/landing-new "a project-management app for remote teams" # planning only → review the plan
 /landing-build                                            # build + motion + polish + SEO
 /landing-review                                           # render @ 390/768/1440, score, fix
 /landing-continue                                         # resume from the last completed phase

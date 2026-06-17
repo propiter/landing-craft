@@ -1,6 +1,6 @@
 ---
 description: The flagship — one prompt to a deployed landing. Asks what it needs, then autonomously runs every phase and deploys. Hands you a live URL.
-argument-hint: "<lo que querés, ej: 'una landing para mi SaaS de facturación'>"
+argument-hint: "<lo que querés, ej: 'una landing para mi SaaS'>"
 ---
 
 Run the full **landing-craft** flagship flow for: **$ARGUMENTS**

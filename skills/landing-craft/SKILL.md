@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.6.0"
+  version: "1.6.1"
 ---
 
 # Landing Craft
@@ -149,7 +149,7 @@ not full content, to keep the thread thin.
 - **No section without a job.** Every block earns its place (attention, desire, proof, objection,
   action). If you can't name its job, cut it.
 - **One primary CTA**, repeated; everything else is secondary/ghost.
-- **Specifics over adjectives.** "Factura ante la DIAN en 60s" beats "la mejor solución innovadora".
+- **Specifics over adjectives.** "Live in 60 seconds" beats "the best innovative all-in-one solution".
 - **Real visual decisions** — a deliberate type scale, a real colour system, generous spacing,
   asymmetry where it helps. Never the framework defaults untouched.
 - **Tailwind + Next.js, no hardcoded tokens** — design tokens live in `tailwind.config`; components

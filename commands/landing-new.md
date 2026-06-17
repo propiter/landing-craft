@@ -1,6 +1,6 @@
 ---
 description: Start a new landing — run the planning phases (strategy → copy + design) and present the plan for approval before building.
-argument-hint: "<product / brief, e.g. 'API de facturación DIAN para devs'>"
+argument-hint: "<product / brief, e.g. 'a project-management app for remote teams'>"
 ---
 
 Start the **landing-craft** workflow for: **$ARGUMENTS**

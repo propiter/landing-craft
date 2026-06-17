@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "A phased, multi-agent workflow that asks what it needs, then autonomously builds AND deploys modern, high-converting landing pages that don't look AI-generated.",
-    "version": "1.6.0"
+    "version": "1.6.1"
   },
   "plugins": [
     {
       "name": "landing-craft",
       "source": "./",
       "description": "Orchestrates 8 specialist sub-agents (strategy → copy → design → build → motion → polish → seo → review) to build a modern, elegant, intuitive, high-converting landing. Reuses the design stack (marketing-strategy, brand-voice, motion-craft, seo-geo, design-review-loop, Impeccable). Next.js by default; framework-agnostic.",
-      "version": "1.6.0",
+      "version": "1.6.1",
       "author": {
         "name": "propiter"
       },

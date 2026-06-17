@@ -6,7 +6,7 @@ made-with-AI". The four bars catch *broken*; they don't catch *soulless*. This i
 
 ## The diagnosis: why "competent dark SaaS" reads as AI-made
 
-The most common failure (it happened to our own WHITELABEL build): technically clean, but:
+The most common failure (a competent "dark SaaS" build): technically clean, but:
 - **No real imagery** — just text + a fake UI panel on a dark gradient. The eye has nothing
   tangible or human to land on.
 - **Monochromatic & cold** — one dark hue + one accent. No warmth, no colour story, no contrast pop.
@@ -37,8 +37,8 @@ Feeling = cold, corporate, forgettable. Fix the *concept*, not the polish.
 Every landing needs tangible visuals: **real product screenshots, photography (human faces where it
 fits), a custom conceptual graphic/illustration, or a signature animated hero.** NEVER ship "text +
 a generic UI mock on a dark gradient". If assets don't exist, propose them (and generate
-placeholders with intent), don't default to abstraction. *For a B2B like WHITELABEL: real photos of
-the team/founder working, an actual dashboard, or a custom animated "orchestration" graphic — like
+placeholders with intent), don't default to abstraction. *For a B2B infra/automation product: real
+photos of the team working, an actual dashboard, or a custom animated "orchestration" graphic — like
 LangGraph's — instead of a faux chat panel.*
 
 ### 2. A signature visual idea — one thing that's THIS brand, not a template
