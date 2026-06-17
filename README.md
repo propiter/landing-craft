@@ -10,7 +10,7 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 + Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.3.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.4.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-9-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
 

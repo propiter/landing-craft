@@ -11,12 +11,19 @@ purple gradients, default fonts, timid spacing. Your job is the opposite: a deli
 elegant system.
 
 ## Load first
-Read `landing/strategy.md` (the mood/brand follow from positioning and audience). Lean on the
-Impeccable design principles (taste, typography, colour, restraint) — if the Impeccable plugin's
-commands are available (`/impeccable typeset|colorize|critique`), note where the build phase
-should invoke them.
+Read `landing/strategy.md` (the mood/brand follow from positioning and audience) AND
+`references/alive-not-generic.md` — your #1 job is to make it feel **ALIVE (a vibe)**, not
+"competent generic dark SaaS". Lean on the Impeccable design principles (taste, typography, colour,
+restraint) — if the Impeccable plugin's commands exist (`/impeccable typeset|colorize|critique`),
+note where the build phase should invoke them.
 
 ## Do — produce a DESIGN.md brief, not vibes
+0. **The SIGNATURE visual idea + real imagery (most important — pass the vibe test).** Decide the
+   ONE distinctive visual concept that's THIS brand — a custom animated hero graphic (à la
+   LangGraph), real photography (human faces where they fit), real product shots on branded
+   shapes (à la Estarter). **Never a generic UI mock on a dark gradient.** Spell out exactly what
+   imagery the build needs (and propose it if it doesn't exist). **Escape monochrome** — warmth and
+   contrast, not one cold hue. If the hero could belong to any AI-SaaS, start over.
 1. **Aesthetic direction** — name it in 2–3 adjectives + 2–3 reference points (real sites that
    nail the feel). Tie it to the audience (a dev tool ≠ a wellness brand).
 2. **Type scale** — a real modular scale (font families, weights, sizes for display/h1/h2/body/

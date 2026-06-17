@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Landing Craft
@@ -17,7 +17,7 @@ artifacts between them, and guard the quality bar.
 
 ## The Prime Directive
 
-Every landing this workflow ships must clear four bars. If any fails, it is not done:
+Every landing this workflow ships must clear FIVE bars. If any fails, it is not done:
 
 1. **It does NOT look AI-generated.** No centered-everything, no untouched component library, no
    purple gradient, no generic hero→3-cards→CTA with lorem spacing. Distinct, intentional, modern.
@@ -26,6 +26,10 @@ Every landing this workflow ships must clear four bars. If any fails, it is not 
 3. **It's intuitive.** One obvious primary action per screen. Nothing makes the user think about
    the interface instead of the offer.
 4. **It's crafted.** 60fps motion with restraint, real type/spacing/contrast, accessible, fast.
+5. **It's ALIVE — it has a vibe.** Real imagery (NOT a generic UI mock on a dark gradient), a
+   signature visual idea that's THIS brand, colour with warmth/contrast (not one cold hue), and
+   **scroll-reactive motion** — things enter and move as you scroll. "Pretty but generic/dead"
+   fails this bar. Run the vibe test in `references/alive-not-generic.md` before sign-off.
 
 ## The Pipeline (the DAG)
 
