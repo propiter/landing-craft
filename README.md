@@ -20,21 +20,44 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 
 ## Install
 
-**One command** (macOS / Linux):
+Pick the option that matches where you are. Each is basically one step.
+
+### 🟣 Inside Claude Code — any OS (Windows · macOS · Linux) · recommended
+
+Type these **in the Claude Code prompt** (not your computer's terminal):
+
+```text
+/plugin marketplace add https://github.com/propiter/landing-craft.git
+/plugin install landing-craft@landing-craft
+/reload-plugins
+```
+
+> ⚠️ Use the full **`https://…​.git`** URL. The short `owner/repo` form can fail with an
+> *"SSH host key… Host key verification failed"* error on machines set up to clone GitHub over SSH.
+> The HTTPS URL avoids that.
+
+This works the same on **Windows**. After installing, the commands are namespaced:
+`/landing-craft:landing`, `/landing-craft:landing-new`, …
+
+### 🍎 macOS / Linux — one command in your terminal
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/propiter/landing-craft/main/install.sh | bash
 ```
 
-**Or as a Claude Code plugin:**
+### 🪟 Windows — one command in PowerShell
 
-```bash
-/plugin marketplace add propiter/landing-craft
-/plugin install landing-craft@landing-craft
+```powershell
+irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | iex
 ```
 
-The installer copies one skill, 9 sub-agents, and 5 slash-commands into `~/.claude/`. No sudo, no
-global npm, nothing runs in the background. Re-run anytime to update.
+The two terminal installers copy one skill, 9 sub-agents and 5 commands into your `~/.claude/`
+folder and give you plain commands — `/landing`, `/landing-new`, … After running one, **restart
+Claude Code or run `/reload-plugins`** to activate them. No admin rights, nothing runs in the
+background; re-run anytime to update.
+
+> **Which should I use?** The Claude Code plugin (first option) is the cleanest — cross-platform and
+> auto-updates. The terminal scripts are handy if you'd rather one command outside Claude.
 
 ## Use it
 

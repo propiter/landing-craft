@@ -40,4 +40,4 @@ say "  skill    → skills/landing-craft"
 say "  agents   → $(ls "$SRC"/agents/landing-*.md | wc -l | tr -d ' ') sub-agents"
 say "  commands → /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
 echo
-say "Done. In Claude Code, try:  /landing-new \"<your product>\""
+say "Done. In Claude Code, run /reload-plugins (or restart it), then try:  /landing \"<your product>\""
