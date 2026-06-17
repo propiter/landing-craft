@@ -95,6 +95,86 @@ try {
   Say "Installed $skillCount skills + sub-agents & commands to: $($installed -join ', ')"
   Say "  commands -> /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
   Write-Host ""
+  # ── Optional Firecrawl setup ──────────────────────────────────────────────
+  # `irm … | iex` pipes the script through a non-interactive host — only prompt when we
+  # have an interactive session ($Host.UI is available and UserInteractive is true).
+  $fcUrl = ''; $fcKey = ''
+  $isInteractive = [Environment]::UserInteractive -and $Host.UI -and $Host.UI.RawUI
+  if ($isInteractive) {
+    Say ""
+    Say "── Firecrawl (optional) ──────────────────────────────────────────────────────"
+    Say "  Self-hosted Firecrawl enables deep market research. Both fields are optional."
+    $fcUrl = ($Host.UI.Prompt('landing-craft', 'Firecrawl URL (optional, press Enter to skip):', 'URL'))['URL']
+    $fcKey = ($Host.UI.Prompt('landing-craft', 'Firecrawl API key (optional, press Enter to skip):', 'Key'))['Key']
+  } else {
+    Say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your env or ~/.claude/settings.json later.)"
+  }
+
+  if ($fcUrl) {
+    # Helper: restrict a credential file's ACL to the current user only (it may hold the API key).
+    function Restrict-Acl($path) {
+      if (Test-Path $path) {
+        try { icacls $path /inheritance:r /grant:r "$($env:USERNAME):(R,W)" 2>$null | Out-Null } catch {}
+      }
+    }
+    # Helper: safely merge FIRECRAWL_* into a settings JSON file using Node, Python, or raw JSON.
+    function Merge-FcSettings($settingsPath, $url, $key) {
+      $dir = Split-Path $settingsPath
+      if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
+      if (Get-Command node -ErrorAction SilentlyContinue) {
+        node -e "const fs=require('fs'),a=process.argv,p=a[1];let c={};try{c=JSON.parse(fs.readFileSync(p,'utf8'))}catch(e){}c.env=c.env||{};c.env.FIRECRAWL_URL=a[2];if(a[3])c.env.FIRECRAWL_API_KEY=a[3];fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');" -- $settingsPath $url $key 2>$null
+        return
+      }
+      if (Get-Command python3 -ErrorAction SilentlyContinue) {
+        $pyScript = @"
+import json, sys
+p = sys.argv[1]; url = sys.argv[2]; key = sys.argv[3]
+try:
+    with open(p) as f: cfg = json.load(f)
+except: cfg = {}
+cfg.setdefault('env', {})['FIRECRAWL_URL'] = url
+if key: cfg['env']['FIRECRAWL_API_KEY'] = key
+with open(p, 'w') as f: json.dump(cfg, f, indent=2); f.write('\n')
+"@
+        python3 -c $pyScript $settingsPath $url $key 2>$null
+        return
+      }
+      # Fallback: only write if file is absent or empty.
+      if (-not (Test-Path $settingsPath) -or (Get-Item $settingsPath).Length -eq 0) {
+        if ($key) {
+          Set-Content $settingsPath (@{env=@{FIRECRAWL_URL=$url;FIRECRAWL_API_KEY=$key}} | ConvertTo-Json -Depth 3)
+        } else {
+          Set-Content $settingsPath (@{env=@{FIRECRAWL_URL=$url}} | ConvertTo-Json -Depth 3)
+        }
+      } else {
+        Say "  Note: could not auto-merge into $settingsPath (no node/python3). Add FIRECRAWL_URL manually."
+      }
+    }
+
+    # Persist to ~/.claude/settings.json for Claude Code.
+    $claudeSettings = Join-Path $ClaudeDir 'settings.json'
+    Merge-FcSettings $claudeSettings $fcUrl $fcKey
+    Restrict-Acl $claudeSettings
+    Say "  Firecrawl URL written to ~/.claude/settings.json"
+
+    # Also persist for OpenCode — it does NOT read ~/.claude/settings.json.
+    if ((Test-Path $OpencodeDir) -or (Get-Command opencode -ErrorAction SilentlyContinue)) {
+      $ocCfg = Join-Path $OpencodeDir 'config.json'
+      Merge-FcSettings $ocCfg $fcUrl $fcKey
+      Restrict-Acl $ocCfg
+      # Plain env file fallback for OpenCode versions that source it.
+      $ocEnv = Join-Path $OpencodeDir 'env'
+      if (Test-Path $ocEnv) {
+        $lines = Get-Content $ocEnv | Where-Object { $_ -notmatch '^FIRECRAWL_URL=' -and $_ -notmatch '^FIRECRAWL_API_KEY=' }
+        Set-Content $ocEnv $lines
+      }
+      Add-Content $ocEnv "FIRECRAWL_URL=$fcUrl"
+      if ($fcKey) { Add-Content $ocEnv "FIRECRAWL_API_KEY=$fcKey" }
+      Restrict-Acl $ocEnv
+      Say "  Firecrawl URL written to OpenCode config (~/.config/opencode/)"
+    }
+  }
+
   Say "Done. Reload your tool (Claude: /reload-plugins; OpenCode: restart), then try:  /landing `"<your product>`""
 }
 finally { Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue }

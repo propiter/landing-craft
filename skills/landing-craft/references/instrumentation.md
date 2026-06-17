@@ -3,6 +3,27 @@
 A landing that can't measure or convert is half-built. Wire all of this so the user only has to drop
 in their IDs. Use env vars for IDs (placeholders the user fills) — never hardcode account IDs.
 
+## The Wiring Contract
+**Build only what the research + architecture decided to include — but whatever you include MUST be
+fully wired. A declared thing that does not work is debt.** Scaffolding without implementation is
+forbidden: adding an env var, a `<form>`, or an asset reference and stopping does NOT count as done.
+
+This is research-driven, not a checklist. **NOT every page needs a form or analytics** — the
+architecture decides what exists. The contract only governs what EXISTS: it enforces COHERENCE
+between what was declared/built and what actually functions. If architecture decided a page has no
+form, there is nothing to wire there. If it decided GA + a lead form, those must be fully wired.
+
+If a thing is present, it MUST function:
+- **Every CTA resolves to a REAL destination** — a route, an anchor to a real on-page section, a
+  signup/booking URL, or a working form. NEVER `href="/"` or `href="#"` as a dead loop.
+- **Every `<form>` submits to a real endpoint** with success/error states — no decorative forms.
+- **Every var in `.env.example` is READ by code somewhere.** An unread var is debt → wire it or
+  remove it.
+- **Every referenced asset** (`og:image`, favicon, any `<img src>`) EXISTS as a generated file —
+  never reference a file you didn't create.
+- **Analytics/consent, IF the strategy calls for them, are ACTUALLY injected/mounted** (the
+  component is in the rendered DOM), not just an env var.
+
 ## 1. Analytics — GA4 and/or Google Tag Manager
 On **Next.js**, use `@next/third-parties/google` (official, performance-safe — loads after hydration):
 
@@ -32,11 +53,40 @@ Mode v2**: default denied → granted on accept). Keep essential cookies working
 load ad/analytics scripts before consent in EU traffic.
 
 ## 4. Forms that actually work — not decorative
-A contact/lead form must submit somewhere real. Pick per the user's setup:
-- a **Next.js route handler** (`app/api/contact/route.ts`) → email (Resend) / their **n8n webhook** /
-  a sheet; OR
-- a no-backend option (**Formspree**, **Web3Forms**) via env-configured endpoint.
-Validate, show success/error states, honeypot for spam. Never leave a `<form>` that goes nowhere.
+*(Only if the architecture called for a form. If it didn't, skip this — nothing to wire.)*
+
+A contact/lead form must submit somewhere real, and be **testable the moment it ships** — never dead
+out of the box. Ship a **working default**: the form posts to an internal Next.js route handler
+(`app/api/contact/route.ts`) that FORWARDS to the user's endpoint if one is set, and otherwise
+accepts the submission and returns success in a "test mode". The form is NEVER dead by default.
+
+```ts
+// app/api/contact/route.ts
+import { NextResponse } from 'next/server'
+
+export async function POST(req: Request) {
+  const data = await req.json()
+  const endpoint = process.env.NEXT_PUBLIC_FORM_ENDPOINT
+  if (endpoint) {
+    // Real endpoint configured → forward the submission (n8n / Formspree / Web3Forms / etc.).
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    if (!res.ok) return NextResponse.json({ ok: false }, { status: 502 })
+    return NextResponse.json({ ok: true })
+  }
+  // No endpoint yet → test mode: accept and succeed so the form is never dead.
+  return NextResponse.json({ ok: true, testMode: true })
+}
+```
+
+The form `POST`s to `/api/contact` by default. Validate, show success/error states, honeypot for
+spam. **The user sets their real endpoint via `NEXT_PUBLIC_FORM_ENDPOINT` in `.env` (or the Vercel
+dashboard) and a redeploy picks it up** — no code change needed. In `.env.example`, use a GENERIC
+placeholder (e.g. `https://your-n8n-or-formspree-endpoint.example/webhook`) — NEVER a real or
+private URL. Never leave a `<form>` that goes nowhere.
 
 ## 5. SEO infrastructure (Next App Router)
 - `app/sitemap.ts` → generate `sitemap.xml` for ALL pages (incl. blog posts).
@@ -49,9 +99,12 @@ Validate, show success/error states, honeypot for spam. Never leave a `<form>` t
 - Analytics/scripts load after interactive (`@next/third-parties` handles this) — don't block LCP.
 - `favicon` + PWA icons + `apple-touch-icon` (via `web-assets`), `theme-color`, `manifest.json`.
 - A `404`/`not-found` page on brand.
-- `.env.example` listing every var; README documents what the user must fill (GA/GTM IDs, form
-  endpoint, production URL for canonical).
+- `.env.example` listing every var — and **every var in it must be READ by code somewhere** (an
+  unread var is debt). README documents what the user must fill (GA/GTM IDs, form endpoint via the
+  generic `https://your-n8n-or-formspree-endpoint.example/webhook` placeholder, production URL for
+  canonical).
 
 ## Output
 The SEO + analytics + consent + forms are all wired behind env placeholders, and `.env.example` +
-the README tell the user exactly what to fill. Nothing is left as a dead stub.
+the README tell the user exactly what to fill. Whatever the architecture decided to include WORKS;
+nothing is left as a dead stub or an unread var.

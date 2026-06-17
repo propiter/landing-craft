@@ -42,6 +42,39 @@ browser link when authentication is genuinely required.
    - **Redeploy on updates:** the project is now linked (`.vercel/` in the dir), so a later
      `vercel deploy` updates the SAME project — use this whenever the user asks for changes.
 
+## 2b. Sync environment variables to Vercel
+
+Do this AFTER the project is linked (`.vercel/` exists) and BEFORE promoting to production.
+
+**Source of truth:** read `.env.local` if it exists, otherwise `.env`. Use `.env.example` (if
+present) as the authoritative list of expected keys — only sync keys that actually appear there AND
+have a non-empty value in the source file. Never invent or assume values.
+
+**How to sync (idempotent):**
+```
+# For each KEY=VALUE pair found:
+vercel env rm <KEY> production --yes 2>/dev/null; vercel env add <KEY> production <<< "<VALUE>"
+# Repeat for preview:
+vercel env rm <KEY> preview --yes 2>/dev/null; vercel env add <KEY> preview <<< "<VALUE>"
+```
+Remove+re-add makes it idempotent — the latest value always wins. Only sync vars that have a real
+value; skip any key whose value is empty or a placeholder like `your_key_here`.
+
+**Security rules:**
+- Env vars go to Vercel's encrypted env store — NEVER print secret values to logs and never commit
+  any `.env*` file (it must be gitignored). `NEXT_PUBLIC_*` vars are public-by-design (they ship
+  to the browser), so logging their key names is fine; avoid logging their values for secret vars.
+
+**Tell the user what to fill in.** After syncing, list the vars that still have placeholder or
+empty values (e.g. `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_FORM_ENDPOINT`, `NEXT_PUBLIC_SITE_URL`) and
+tell the user:
+> "Fill these in your `.env.local` with your real values (GA/GTM ID, form endpoint, canonical URL)
+> and ask me to redeploy — or set them directly in the Vercel dashboard under Settings → Environment
+> Variables. A redeploy will pick them up automatically."
+
+**Redeploy contract:** because the project is already linked, a later `vercel deploy` re-reads the
+synced env store — the user's updated values take effect on the next redeploy with no extra steps.
+
 ## Rules
 - **Preview first, production on approval.** Never push a first draft straight to a live domain.
 - Don't commit secrets or tokens. If a `VERCEL_TOKEN` is provided in the env, you may use

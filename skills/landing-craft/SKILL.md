@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Landing Craft
@@ -75,8 +75,8 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 | 6. Motion | `landing-motion` | `motion-craft`, `animation-levels` | scroll-reactive motion at the chosen intensity, reduced-motion safe |
 | 7. Polish | `landing-polish` | Impeccable, `contrast-check` | craft pass, responsive, AA contrast (measured), focus states |
 | 8. SEO | `landing-seo` | `seo-geo` | meta/OG/JSON-LD/CWV/llms.txt per page, targeting the researched keywords |
-| 9. Review | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic` | render + score the 5 bars + contrast gate → pass/fail |
-| 10. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth |
+| 9. Review | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic` | render + score the 5 bars + contrast gate + **wiring gate** (no dead CTAs / decorative forms / unread env vars / missing assets / unmounted analytics) → pass/fail |
+| 10. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth; **syncs `.env` → Vercel** so redeploys pick up the user's real values |
 
 ## How to run it
 
@@ -175,8 +175,10 @@ not full content, to keep the thread thin.
 - `references/playbook.md` — conversion architecture (hero formula, proof, CTA rules).
 - `references/animation-levels.md` — subtle/medium/rich motion + library stack.
 - `references/contrast-check.md` — the WCAG gate (measured, not eyeballed).
-- `references/instrumentation.md` — production-ready: GA4/GTM, consent, working forms, sitemap/robots,
-  `.env.example`. Load in seo + build (leave nothing as a dead stub).
+- `references/instrumentation.md` — the **Wiring Contract** (declared = implemented): GA4/GTM,
+  consent, working forms (internal `/api/contact` route + env endpoint), sitemap/robots,
+  `.env.example`. Research-driven — wire only what the architecture decided, but whatever EXISTS must
+  function. Load in seo + build (leave nothing as a dead stub or an unread var).
 - `references/assets.md` — images: GENERATE the signature visual/OG/favicons/SVGs (via bundled
   `web-assets` + Playwright, **installed if missing**); ASK the user only for real logo/photos. Load
   in design + build. No `<img>` points at a missing file.

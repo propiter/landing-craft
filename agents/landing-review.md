@@ -34,6 +34,22 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
    - LCP is the hero.
 4. **Score the craft**: typography, spacing, hierarchy, colour, responsive integrity, motion
    restraint.
+5. **Wiring gate (research-driven — MANDATORY).** After rendering, verify that everything the build
+   DECLARED actually WORKS — scaffolding without implementation is an automatic **FAIL**. This is
+   research-driven: you require ONLY what the architecture/strategy decided to include and check that
+   those DECLARED things function — you do NOT impose a fixed feature set (a page with no form is
+   correct; nothing to check there). Use Playwright `page.evaluate` + `grep` over `src`:
+   - **No dead CTAs** — assert NO primary/secondary CTA resolves to `href="/"` or `href="#"` as a
+     mere loop; every CTA goes to a real route, a real in-page anchor, or triggers a real
+     action/form. Cross-check against the architecture's CTA journey.
+   - **Forms submit** — every `<form>` has a working submit path (handler/action posting to
+     `/api/contact` or a real endpoint). No decorative forms.
+   - **Env coherence** — every var in `.env.example` is referenced in `src` (grep). An unread var is
+     a FAIL — wire it or remove it.
+   - **Assets exist** — every referenced `og:image` / favicon / `<img src>` resolves (no 404).
+   - **Analytics/consent IF intended by the strategy** — the GA/GTM script is actually present in
+     the rendered DOM and consent gates it. (If the strategy didn't call for analytics, skip.)
+   Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.
 
 ## Output
 Return a verdict: **PASS** or **FAIL**, plus a table of issues `Severity · Where · Fix`. If FAIL,
@@ -41,5 +57,8 @@ hand the fixes to `landing-polish` (or upstream if it's a copy/design problem) a
 3 passes. Only return PASS when both bars are met. Save `landing/review.md`.
 
 **You are the zero-debt backstop.** Any debt you find — duplicated markup, dead links, missing
-hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases — is FIXED
-before PASS, never just noted. The site ships with no known debt.
+hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **or any
+scaffolding-without-implementation the wiring gate catches (dead CTAs, decorative forms, unread env
+vars, missing assets, declared-but-unmounted analytics)** — is FIXED before PASS, never just noted.
+The contract is COHERENCE between what was declared and what works, not a fixed feature set. The site
+ships with no known debt.

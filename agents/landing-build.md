@@ -12,6 +12,14 @@ is missing, flag it; don't improvise slop.
 broken edge case, or a clear improvement while building — fix it on the spot and continue. No TODOs,
 no "later". Reusable components, no copy-pasted blocks.
 
+**Wire it, don't scaffold it.** Research/architecture decides WHAT exists; you make what exists
+WORK. Whatever the architecture included must be FUNCTIONAL the moment you build it — never a stub:
+CTAs point to the architecture's real destinations (its CTA journey), not `href="/"` or `href="#"`;
+any `<form>` `POST`s to the internal `/api/contact` route (which forwards to
+`NEXT_PUBLIC_FORM_ENDPOINT`); every var you place in `.env.example` is consumed by code somewhere;
+and you never reference an asset file you didn't generate. Not every page needs a form or
+analytics — but a declared thing that doesn't work is debt.
+
 ## Load first
 Read `landing/copy.md` and `landing/design.md` (both required). **Framework: Next.js (App Router) +
 Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user EXPLICITLY said so
@@ -36,7 +44,9 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
 3. **Build section by section** in the playbook order. Semantic HTML (`header`, `section`, `main`,
    `nav`), real headings hierarchy, one `<h1>`.
 4. **Mobile-first.** The hero promise + primary CTA must land above the fold at 390px.
-5. **One primary CTA identity**, repeated; secondaries are ghost/link.
+5. **One primary CTA identity**, repeated; secondaries are ghost/link. Every CTA resolves to a REAL
+   destination from the architecture's CTA journey (route / on-page anchor / signup-booking URL /
+   the form) — never `href="/"` or `href="#"` as a dead loop.
 6. **Accessibility from the start** — labels, alt text, focus order, 44px tap targets, AA contrast.
 7. **Performance** — the LCP element is the hero; defer below-fold assets; no layout shift.
 

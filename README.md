@@ -12,7 +12,7 @@ design → build → motion → polish → SEO → review → **deploy** (GitHub
 interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.8.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.9.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
@@ -72,7 +72,11 @@ irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | 
 
 The two terminal installers copy the **whole stack** — 7 skills (landing-craft + its bundled
 dependencies), 12 sub-agents and 8 commands — and **auto-detect Claude Code, OpenCode and Cursor**,
-installing to each (OpenCode reads `~/.claude/skills/` natively). They fetch Impeccable too.
+installing to each (OpenCode reads `~/.claude/skills/` natively). They fetch Impeccable too. If run
+in a real terminal they also **offer an optional Firecrawl setup** (URL + optional API key — the key
+is *not* required for self-hosted) and write it where each tool reads it, including OpenCode (which
+does **not** read `~/.claude/settings.json`). Piped non-interactively (`curl … | bash`)? It's skipped
+cleanly — set `FIRECRAWL_URL` in your env later.
 You get plain commands: `/landing`, `/landing-new`, … After running one, **restart Claude Code or
 run `/reload-plugins`** to activate them. No admin rights, nothing runs in the background; re-run
 anytime to update.
@@ -116,8 +120,8 @@ hands you a live URL (it installs the Vercel CLI if missing and guides the one-t
 | 6 | Motion | `landing-motion` | Scroll-reactive motion at the chosen intensity, reduced-motion safe |
 | 7 | Polish | `landing-polish` | Craft pass — type, spacing, contrast (measured), responsive, states |
 | 8 | SEO | `landing-seo` | Meta, OG, JSON-LD, CWV, llms.txt per page, researched keywords |
-| 9 | Review | `landing-review` | Renders & scores the 5 bars + contrast gate; loops until it passes |
-| 10 | Deploy | `landing-deploy` | GitHub + Vercel; installs the CLI & guides first-time login |
+| 9 | Review | `landing-review` | Renders & scores the 5 bars + contrast gate + a **wiring gate** (no dead CTAs, decorative forms, unread env vars, missing assets, or unmounted analytics); loops until it passes |
+| 10 | Deploy | `landing-deploy` | GitHub + Vercel; installs the CLI & guides first-time login; **syncs `.env` → Vercel** so a redeploy picks up your real GA ID / form endpoint / canonical URL |
 
 ## The five bars (enforced every phase)
 

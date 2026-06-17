@@ -81,4 +81,87 @@ say "Installed $SKILL_COUNT skills + landing-craft sub-agents & commands to:$INS
 say "  skills   → landing-craft + motion-craft + marketing-strategy + brand-voice + seo-geo + design-review-loop${IMP_LABEL}"
 say "  commands → /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
 echo
+
+# ── Optional Firecrawl setup ─────────────────────────────────────────────────
+# The script may be run via `curl … | bash`, which means stdin is the script itself — a plain
+# `read` will not work. We redirect from /dev/tty only when a real terminal is attached.
+# If no TTY is available we skip silently so the install never hangs or fails.
+_fc_url="" _fc_key=""
+if [ -t 0 ] || [ -e /dev/tty ]; then
+  _tty="/dev/tty"
+  say ""
+  say "── Firecrawl (optional) ─────────────────────────────────────────────────────"
+  say "  Self-hosted Firecrawl enables deep market research. Both fields are optional."
+  printf '[landing-craft] Firecrawl URL (optional, press Enter to skip): '
+  read -r _fc_url <"$_tty" || _fc_url=""
+  printf '[landing-craft] Firecrawl API key (optional, press Enter to skip): '
+  read -r _fc_key <"$_tty" || _fc_key=""
+else
+  say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your env or ~/.claude/settings.json later.)"
+fi
+
+if [ -n "$_fc_url" ]; then
+  # These files may hold FIRECRAWL_API_KEY (a secret) → create them owner-only (0600).
+  umask 077
+  # Persist to ~/.claude/settings.json (Claude Code) using node or python3 for safe JSON merge.
+  _claude_settings="$CLAUDE_DIR/settings.json"
+  _merge_fc() {
+    local _settings="$1" _url="$2" _key="$3"
+    if command -v node >/dev/null 2>&1; then
+      node -e "const fs=require('fs'),a=process.argv,p=a[1];let c={};try{c=JSON.parse(fs.readFileSync(p,'utf8'))}catch(e){}c.env=c.env||{};c.env.FIRECRAWL_URL=a[2];if(a[3])c.env.FIRECRAWL_API_KEY=a[3];fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');" -- "$_settings" "$_url" "$_key" 2>/dev/null && return 0
+    fi
+    if command -v python3 >/dev/null 2>&1; then
+      # Write a tiny temp script so we never touch stdin (safe under curl|bash).
+      _py="$(mktemp /tmp/lcfc_XXXXXX.py)"
+      cat > "$_py" <<'PYEOF'
+import json, sys
+p, url, key = sys.argv[1], sys.argv[2], sys.argv[3]
+try:
+    with open(p) as f: cfg = json.load(f)
+except Exception: cfg = {}
+cfg.setdefault('env', {})['FIRECRAWL_URL'] = url
+if key: cfg['env']['FIRECRAWL_API_KEY'] = key
+with open(p, 'w') as f: json.dump(cfg, f, indent=2); f.write('\n')
+PYEOF
+      python3 "$_py" "$_settings" "$_url" "$_key" 2>/dev/null; _rc=$?; rm -f "$_py"
+      [ "$_rc" = "0" ] && return 0
+    fi
+    # Fallback: naive append (only if file doesn't exist or is empty)
+    if [ ! -s "$_settings" ]; then
+      if [ -n "$_key" ]; then
+        printf '{"env":{"FIRECRAWL_URL":"%s","FIRECRAWL_API_KEY":"%s"}}\n' "$_url" "$_key" > "$_settings"
+      else
+        printf '{"env":{"FIRECRAWL_URL":"%s"}}\n' "$_url" > "$_settings"
+      fi
+    else
+      say "  Note: could not auto-merge into $_settings (no node/python3). Add FIRECRAWL_URL manually."
+    fi
+  }
+  mkdir -p "$CLAUDE_DIR"; chmod 700 "$CLAUDE_DIR" 2>/dev/null
+  _merge_fc "$_claude_settings" "$_fc_url" "$_fc_key"
+  chmod 600 "$_claude_settings" 2>/dev/null   # tighten if the file pre-existed at 0644
+  say "  Firecrawl URL written to ~/.claude/settings.json"
+
+  # If OpenCode is present, also persist there — OpenCode does NOT read ~/.claude/settings.json.
+  # OpenCode reads its env from ~/.config/opencode/config.json (if supported) or falls back to
+  # the shell env. We write to ~/.config/opencode/env (a simple KEY=VALUE file read by some versions)
+  # and also to ~/.config/opencode/config.json under an `env` block.
+  if [ -d "$OPENCODE_DIR" ] || command -v opencode >/dev/null 2>&1; then
+    mkdir -p "$OPENCODE_DIR"; chmod 700 "$OPENCODE_DIR" 2>/dev/null
+    # Write/update ~/.config/opencode/config.json using the same safe-merge helper.
+    _oc_cfg="$OPENCODE_DIR/config.json"
+    _merge_fc "$_oc_cfg" "$_fc_url" "$_fc_key"
+    # Also write a plain env file as fallback for OpenCode versions that source it.
+    _oc_env="$OPENCODE_DIR/env"
+    if [ -f "$_oc_env" ]; then
+      # Remove old entries then re-append.
+      grep -v '^FIRECRAWL_URL=' "$_oc_env" | grep -v '^FIRECRAWL_API_KEY=' > "$_oc_env.tmp" && mv "$_oc_env.tmp" "$_oc_env" || true
+    fi
+    printf 'FIRECRAWL_URL=%s\n' "$_fc_url" >> "$_oc_env"
+    [ -n "$_fc_key" ] && printf 'FIRECRAWL_API_KEY=%s\n' "$_fc_key" >> "$_oc_env"
+    chmod 600 "$_oc_cfg" "$_oc_env" 2>/dev/null   # tighten if either pre-existed at 0644
+    say "  Firecrawl URL written to OpenCode config (~/.config/opencode/)"
+  fi
+fi
+
 say "Done. In your tool, reload (Claude: /reload-plugins, OpenCode: restart), then try:  /landing \"<your product>\""

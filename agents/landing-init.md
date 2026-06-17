@@ -14,7 +14,20 @@ You set the stage so the pipeline never trips on a missing tool. Follow `referen
 3. **Tooling readiness** (so deploy + research work):
    - `gh auth status` → GitHub ready?
    - `vercel whoami` (install via `npm i -g vercel` if missing) → Vercel auth state.
-   - Firecrawl reachable? (`curl -sS -m 8 -o /dev/null -w '%{http_code}' $FIRECRAWL_URL` if configured.)
+   - Firecrawl reachable? Detect the URL across **multiple locations** — the API key is OPTIONAL
+     (self-hosted Firecrawl often needs none; only the URL matters):
+     1. Shell env `$FIRECRAWL_URL`
+     2. Project `.env` / `.env.local` (grep for `FIRECRAWL_URL=`)
+     3. `~/.claude/settings.json` → `.env.FIRECRAWL_URL` block
+        *(note: OpenCode does NOT read `~/.claude/settings.json` — that is why we must also check
+        OpenCode's own config and the shell/project env)*
+     4. OpenCode config `~/.config/opencode/` → any `FIRECRAWL_URL` entry
+     If a URL is found, probe it: `curl -sS -m 8 -o /dev/null -w '%{http_code}' "$FIRECRAWL_URL"`;
+     a 2xx/3xx/4xx response (i.e. the server answered) means **Ready**.
+     `FIRECRAWL_API_KEY` — check the same locations; if present use it; if absent that is fine,
+     proceed without it.
+     If NO URL is found anywhere → mark Firecrawl as **Optional / skipped** (research falls back to
+     WebFetch/WebSearch). This is NOT a blocking "needs attention" warning — never block the pipeline.
    - **Playwright** (for asset rendering + the pre-deploy visual test): are browsers present? If
      not, note it'll auto-install on first use (`npx playwright install chromium`). `icotool` for favicons?
    - engram available? Node/pnpm present?
