@@ -17,7 +17,7 @@ OPENCODE_DIR="${OPENCODE_CONFIG_DIR:-$HOME/.config/opencode}"
 CURSOR_DIR="${CURSOR_CONFIG_DIR:-$HOME/.cursor}"
 
 say()  { printf '\033[1m[landing-craft]\033[0m %s\n' "$1"; }
-copy_skills()  { for d in "$SRC"/skills/*/; do n="$(basename "$d")"; rm -rf "$1/$n"; cp -R "$d" "$1/$n"; done; }
+copy_skills()  { for d in "$SRC"/skills/*/; do n="$(basename "$d")"; rm -rf "${1:?}/${n:?}"; cp -R "$d" "$1/$n"; done; }
 # OpenCode/Cursor reject Claude's `tools:` string frontmatter — strip Claude-only keys and mark
 # agents `mode: subagent`. (Claude itself gets the files verbatim; only these targets transform.)
 oc_transform() {  # $1 src file, $2 dest dir, $3 = agent|command
@@ -27,7 +27,7 @@ oc_transform() {  # $1 src file, $2 dest dir, $3 = agent|command
     {print}' "$1" > "$2/$(basename "$1")"; }
 
 # ── fetch source ────────────────────────────────────────────────────────────
-TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
+TMP="$(mktemp -d)"; trap 'rm -rf "${TMP:?}"' EXIT
 say "Fetching landing-craft…"
 if command -v git >/dev/null 2>&1; then
   git clone --depth 1 --branch "$BRANCH" "$REPO" "$TMP/landing-craft" >/dev/null 2>&1
@@ -46,7 +46,7 @@ if [ "$WITH_IMPECCABLE" = "1" ] && command -v git >/dev/null 2>&1; then
     cp -R "$TMP/imp/.agents/skills/impeccable" "$SRC/skills/impeccable"
   fi
 fi
-SKILL_COUNT="$(ls -d "$SRC"/skills/*/ | wc -l | tr -d ' ')"
+SKILL_DIRS=("$SRC"/skills/*/); SKILL_COUNT="${#SKILL_DIRS[@]}"
 IMP_LABEL=""; [ -d "$SRC/skills/impeccable" ] && IMP_LABEL=" + impeccable"
 INSTALLED=""
 
@@ -95,7 +95,7 @@ _fc_found=""
 if [ -n "${FIRECRAWL_URL:-}" ]; then
   _fc_found="shell env"
 elif [ -f "$CLAUDE_DIR/settings.json" ] && grep -q 'FIRECRAWL_URL' "$CLAUDE_DIR/settings.json" 2>/dev/null; then
-  _fc_found="~/.claude/settings.json"
+  _fc_found="$HOME/.claude/settings.json"
 elif grep -q '^export FIRECRAWL_URL=' "$_profile" 2>/dev/null; then
   _fc_found="$_profile"
 fi

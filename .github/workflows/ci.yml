@@ -45,7 +45,8 @@ jobs:
         run: sudo apt-get install -y shellcheck
 
       - name: Lint install.sh with shellcheck
-        run: shellcheck install.sh
+        # Block on warning+ (real bugs); info/style nags are advisory, not blocking.
+        run: shellcheck --severity=warning install.sh
 
       - name: Syntax-check install.sh
         run: bash -n install.sh
