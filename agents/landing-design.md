@@ -39,6 +39,11 @@ note where the build phase should invoke them.
    **PROVIDE** (real product/team photos only). The logo ships as a GENERATED on-brand placeholder
    the user can swap later — never the framework default, never an unbranded site. Real product
    shots / screenshots over generic illustrations; never stock filler. The build phase produces this list.
+7. **Set the ANIMATION LEVEL** (per `references/animation-levels.md` → "How the level is chosen").
+   Default `medium`; **escalate to `rich`** when this brand/niche is bold (creative/consumer/launch/
+   portfolio) — motion is part of their story. Stay `medium` for trust-first categories (B2B/fintech/
+   health/enterprise). NEVER pick `subtle` or `ultra` unless the user explicitly asked (a saved
+   preference overrides). State the chosen level + one line of why in `design.md` so motion applies it.
 
 ## Output
 Write `landing/design.md` with a copy-pasteable **Tailwind theme** (`tailwind.config` →

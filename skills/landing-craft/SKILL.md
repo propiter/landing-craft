@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.9.3"
+  version: "1.10.0"
 ---
 
 # Landing Craft
@@ -156,10 +156,12 @@ not full content, to keep the thread thin.
   asymmetry where it helps. Never the framework defaults untouched.
 - **Tailwind + Next.js, no hardcoded tokens** — design tokens live in `tailwind.config`; components
   use utility classes that reference them. Next.js is the default stack (switch only if told).
-- **Motion with configurable DEPTH, not flat** — apply the user's chosen intensity
-  (`subtle`/`medium`/`rich`, default medium) per `references/animation-levels.md` (Motion · GSAP ·
-  Lenis · Aceternity/Magic UI: card hovers, smooth scroll, counters, magnetic/tilt at the top end).
-  Never flat, never chaotic — one signal per viewport; always `prefers-reduced-motion`.
+- **Motion with configurable DEPTH, not flat** — `subtle`/`medium`/`rich`/`ultra`, **default
+  medium**, per `references/animation-levels.md`. **Auto-escalate to `rich`** when the niche/brand is
+  bold (creative/consumer/launch/portfolio); **NEVER auto-drop to `subtle`** (the ALIVE bar) and
+  **NEVER auto-reach `ultra`** — both are explicit-only (ultra = moving backgrounds / cursor scenes /
+  scroll-3D, guardrailed for CWV + reduced-motion). Never flat, never chaotic — one signal per
+  viewport; always `prefers-reduced-motion`.
 - **Accessible & fast** — AA contrast **MEASURED, not eyeballed** (run the scorer in
   `references/contrast-check.md`; it's a hard gate before deploy), focus states, semantic HTML,
   Core Web Vitals green.
