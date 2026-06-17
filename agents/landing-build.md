@@ -27,6 +27,9 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
 (`subtle`/`medium`/`rich`) and `references/animation-levels.md` so the structure supports it.
 
 ## Do
+Build into the **project HOME that init chose** (`~/Projets/landing/<name>/`, recorded in `_init.md`)
+— NEVER `$HOME` root, and NEVER inside the landing-craft skill's own repo or a clone of it. This is a
+standalone project; keep it fully isolated from the skill.
 0. **Read `landing/architecture.md` (the page map) — build ALL its pages**, not just the home/landing:
    `app/page.tsx` (home) + `app/<page>/page.tsx` for about / contact / terms / privacy / FAQ, and
    `app/blog/` (index + `[slug]`). Use **shared, reusable** `Header` / `Footer` / `Section` /

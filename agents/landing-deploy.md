@@ -8,9 +8,16 @@ You ship it. After review passes, your job is to get the landing live with the u
 little as possible — ideally nothing but opening a URL. Never run before review PASSES.
 
 ## 1. GitHub (if available)
-- `gh auth status` — if authenticated, create + push the repo:
-  `gh repo create <owner>/<name> --public --source=<project-root> --remote=origin --push`
-  (or push to an existing remote). If `gh` isn't authenticated, skip and note it; don't block deploy.
+- `gh auth status` — if authenticated, create + push a **NEW, DEDICATED repo** for this landing:
+  `gh repo create <owner>/<name> --public --source=<project-root> --remote=origin --push`.
+- **CRITICAL — always a fresh repo, never an existing one.** A brand's GitHub URL mentioned in the
+  brief (e.g. "github.com/acme/acme") is a **reference for research, NOT a deploy target**. NEVER
+  clone an existing repo and build inside it, and NEVER push the generated site into a repo that
+  already has unrelated contents (above all, never the landing-craft skill's own repo). Before
+  creating, check the name is free (`gh repo view <owner>/<name>` → if it EXISTS, pick a distinct
+  name like `<brand>-site` / `<brand>-landing`). The generated site is its OWN standalone project —
+  it must live in its OWN repo with only its own files.
+- If `gh` isn't authenticated, skip and note it; don't block deploy.
 
 ## 2. Vercel — install if missing, auth via DEVICE FLOW (no terminal for the user), then deploy
 

@@ -32,7 +32,11 @@ You set the stage so the pipeline never trips on a missing tool. Follow `referen
    - engram available? Node/pnpm present?
 4. **Style profile** — `mem_search landing-craft/style-profile`; if absent, note the defaults
    (Next.js+Tailwind, animation `medium`, no hardcoded tokens).
-5. **Bootstrap** — create `landing/` for artifacts. Do NOT scaffold the app yet (build phase owns that).
+5. **Bootstrap** — decide the project HOME first: a dedicated, organized directory
+   **`~/Projets/landing/<project-name>/`** (kebab-case from the brief). **NEVER `$HOME` root, NEVER
+   the current dir when it's the landing-craft skill's own repo or a clone of it.** Create that dir,
+   then create `landing/` inside it for artifacts. Do NOT scaffold the app yet (build owns that).
+   **Record the chosen project path in `_init.md`** so every later phase builds in the SAME place.
 
 ## Zero-debt
 If a check reveals something fixable now (e.g. Vercel not installed → install it; `landing/` missing

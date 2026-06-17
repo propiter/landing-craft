@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.10.1"
+  version: "1.10.2"
 ---
 
 # Landing Craft
@@ -122,7 +122,11 @@ preference ("siempre con muchas animaciones"), `mem_save` it to the profile. Nev
 
 After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing but open a live URL.
 
-1. **GitHub** — if `gh` is authenticated, create + push the repo (`gh repo create … --source … --push`).
+1. **GitHub** — if `gh` is authenticated, create + push a **NEW, DEDICATED repo** (`gh repo create
+   <owner>/<name> --source … --push`). A brand's repo URL in the brief is a **reference, NOT a target**
+   — NEVER clone or push into an existing repo (above all, never this skill's own repo); if the name
+   is taken, use `<brand>-site`. The generated landing lives in `~/Projets/landing/<name>/` and its
+   OWN repo — fully isolated from the skill.
 2. **Vercel — no terminal for the user.** If the `vercel` CLI is missing, **install it**
    (`npm i -g vercel`). Then `vercel whoami`; if not authed, run **`vercel login` in the BACKGROUND**
    — it **auto-opens the user's browser** to the device-approval page (code pre-filled; they just
