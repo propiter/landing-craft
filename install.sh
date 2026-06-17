@@ -83,11 +83,28 @@ say "  commands → /landing  /landing-new  /landing-build  /landing-review  /la
 echo
 
 # ── Optional Firecrawl setup ─────────────────────────────────────────────────
-# The script may be run via `curl … | bash`, which means stdin is the script itself — a plain
-# `read` will not work. We redirect from /dev/tty only when a real terminal is attached.
-# If no TTY is available we skip silently so the install never hangs or fails.
+# Only ASK when FIRECRAWL_URL is NOT already configured anywhere we look. (`curl … | bash`
+# has no usable stdin, so we read from /dev/tty when a real terminal is attached.)
+_profile="$HOME/.profile"
+case "${SHELL##*/}" in
+  zsh)  _profile="$HOME/.zshrc" ;;
+  bash) _profile="$HOME/.bashrc" ;;
+esac
+
+_fc_found=""
+if [ -n "${FIRECRAWL_URL:-}" ]; then
+  _fc_found="shell env"
+elif [ -f "$CLAUDE_DIR/settings.json" ] && grep -q 'FIRECRAWL_URL' "$CLAUDE_DIR/settings.json" 2>/dev/null; then
+  _fc_found="~/.claude/settings.json"
+elif grep -q '^export FIRECRAWL_URL=' "$_profile" 2>/dev/null; then
+  _fc_found="$_profile"
+fi
+
 _fc_url="" _fc_key=""
-if [ -t 0 ] || [ -e /dev/tty ]; then
+if [ -n "$_fc_found" ]; then
+  say ""
+  say "  Firecrawl already configured (found in $_fc_found) — skipping."
+elif [ -t 0 ] || [ -e /dev/tty ]; then
   _tty="/dev/tty"
   say ""
   say "── Firecrawl (optional) ─────────────────────────────────────────────────────"
@@ -97,7 +114,7 @@ if [ -t 0 ] || [ -e /dev/tty ]; then
   printf '[landing-craft] Firecrawl API key (optional, press Enter to skip): '
   read -r _fc_key <"$_tty" || _fc_key=""
 else
-  say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your env or ~/.claude/settings.json later.)"
+  say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your shell env later.)"
 fi
 
 if [ -n "$_fc_url" ]; then
@@ -140,27 +157,18 @@ PYEOF
   mkdir -p "$CLAUDE_DIR"; chmod 700 "$CLAUDE_DIR" 2>/dev/null
   _merge_fc "$_claude_settings" "$_fc_url" "$_fc_key"
   chmod 600 "$_claude_settings" 2>/dev/null   # tighten if the file pre-existed at 0644
-  say "  Firecrawl URL written to ~/.claude/settings.json"
+  say "  Firecrawl written to ~/.claude/settings.json (Claude Code)"
 
-  # If OpenCode is present, also persist there — OpenCode does NOT read ~/.claude/settings.json.
-  # OpenCode reads its env from ~/.config/opencode/config.json (if supported) or falls back to
-  # the shell env. We write to ~/.config/opencode/env (a simple KEY=VALUE file read by some versions)
-  # and also to ~/.config/opencode/config.json under an `env` block.
-  if [ -d "$OPENCODE_DIR" ] || command -v opencode >/dev/null 2>&1; then
-    mkdir -p "$OPENCODE_DIR"; chmod 700 "$OPENCODE_DIR" 2>/dev/null
-    # Write/update ~/.config/opencode/config.json using the same safe-merge helper.
-    _oc_cfg="$OPENCODE_DIR/config.json"
-    _merge_fc "$_oc_cfg" "$_fc_url" "$_fc_key"
-    # Also write a plain env file as fallback for OpenCode versions that source it.
-    _oc_env="$OPENCODE_DIR/env"
-    if [ -f "$_oc_env" ]; then
-      # Remove old entries then re-append.
-      grep -v '^FIRECRAWL_URL=' "$_oc_env" | grep -v '^FIRECRAWL_API_KEY=' > "$_oc_env.tmp" && mv "$_oc_env.tmp" "$_oc_env" || true
-    fi
-    printf 'FIRECRAWL_URL=%s\n' "$_fc_url" >> "$_oc_env"
-    [ -n "$_fc_key" ] && printf 'FIRECRAWL_API_KEY=%s\n' "$_fc_key" >> "$_oc_env"
-    chmod 600 "$_oc_cfg" "$_oc_env" 2>/dev/null   # tighten if either pre-existed at 0644
-    say "  Firecrawl URL written to OpenCode config (~/.config/opencode/)"
+  # OpenCode + every other shell tool: export it from the shell profile. OpenCode INHERITS the
+  # shell env — it does NOT read ~/.claude/settings.json, and its config.json REJECTS an `env`
+  # key (writing one there breaks OpenCode). The shell profile is the correct, universal home.
+  if ! grep -q '^export FIRECRAWL_URL=' "$_profile" 2>/dev/null; then
+    {
+      printf '\n# Firecrawl (landing-craft) — read by OpenCode + shell tools\n'
+      printf 'export FIRECRAWL_URL="%s"\n' "$_fc_url"
+      if [ -n "$_fc_key" ]; then printf 'export FIRECRAWL_API_KEY="%s"\n' "$_fc_key"; fi
+    } >> "$_profile"
+    say "  Firecrawl exported in $_profile (open a new terminal to load it)"
   fi
 fi
 

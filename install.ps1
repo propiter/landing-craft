@@ -96,18 +96,26 @@ try {
   Say "  commands -> /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
   Write-Host ""
   # ── Optional Firecrawl setup ──────────────────────────────────────────────
-  # `irm … | iex` pipes the script through a non-interactive host — only prompt when we
-  # have an interactive session ($Host.UI is available and UserInteractive is true).
+  # Only ASK when FIRECRAWL_URL is NOT already configured. `irm … | iex` is non-interactive,
+  # so we only prompt in an interactive session ($Host.UI available + UserInteractive).
   $fcUrl = ''; $fcKey = ''
+  $claudeSettings = Join-Path $ClaudeDir 'settings.json'
+  $fcFound = ''
+  if ($env:FIRECRAWL_URL) { $fcFound = 'shell env' }
+  elseif ([Environment]::GetEnvironmentVariable('FIRECRAWL_URL', 'User')) { $fcFound = 'user environment' }
+  elseif ((Test-Path $claudeSettings) -and (Select-String -Path $claudeSettings -Pattern 'FIRECRAWL_URL' -Quiet)) { $fcFound = '~/.claude/settings.json' }
   $isInteractive = [Environment]::UserInteractive -and $Host.UI -and $Host.UI.RawUI
-  if ($isInteractive) {
+  if ($fcFound) {
+    Say ""
+    Say "  Firecrawl already configured (found in $fcFound) — skipping."
+  } elseif ($isInteractive) {
     Say ""
     Say "── Firecrawl (optional) ──────────────────────────────────────────────────────"
     Say "  Self-hosted Firecrawl enables deep market research. Both fields are optional."
     $fcUrl = ($Host.UI.Prompt('landing-craft', 'Firecrawl URL (optional, press Enter to skip):', 'URL'))['URL']
     $fcKey = ($Host.UI.Prompt('landing-craft', 'Firecrawl API key (optional, press Enter to skip):', 'Key'))['Key']
   } else {
-    Say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your env or ~/.claude/settings.json later.)"
+    Say "  (Non-interactive install — Firecrawl setup skipped. Set FIRECRAWL_URL in your env later.)"
   }
 
   if ($fcUrl) {
@@ -151,28 +159,17 @@ with open(p, 'w') as f: json.dump(cfg, f, indent=2); f.write('\n')
       }
     }
 
-    # Persist to ~/.claude/settings.json for Claude Code.
-    $claudeSettings = Join-Path $ClaudeDir 'settings.json'
+    # Persist to ~/.claude/settings.json for Claude Code (valid for Claude only).
     Merge-FcSettings $claudeSettings $fcUrl $fcKey
     Restrict-Acl $claudeSettings
-    Say "  Firecrawl URL written to ~/.claude/settings.json"
+    Say "  Firecrawl written to ~/.claude/settings.json (Claude Code)"
 
-    # Also persist for OpenCode — it does NOT read ~/.claude/settings.json.
-    if ((Test-Path $OpencodeDir) -or (Get-Command opencode -ErrorAction SilentlyContinue)) {
-      $ocCfg = Join-Path $OpencodeDir 'config.json'
-      Merge-FcSettings $ocCfg $fcUrl $fcKey
-      Restrict-Acl $ocCfg
-      # Plain env file fallback for OpenCode versions that source it.
-      $ocEnv = Join-Path $OpencodeDir 'env'
-      if (Test-Path $ocEnv) {
-        $lines = Get-Content $ocEnv | Where-Object { $_ -notmatch '^FIRECRAWL_URL=' -and $_ -notmatch '^FIRECRAWL_API_KEY=' }
-        Set-Content $ocEnv $lines
-      }
-      Add-Content $ocEnv "FIRECRAWL_URL=$fcUrl"
-      if ($fcKey) { Add-Content $ocEnv "FIRECRAWL_API_KEY=$fcKey" }
-      Restrict-Acl $ocEnv
-      Say "  Firecrawl URL written to OpenCode config (~/.config/opencode/)"
-    }
+    # OpenCode + every other shell tool: a persistent USER environment variable. OpenCode
+    # INHERITS the environment — it does NOT read ~/.claude/settings.json, and its config.json
+    # REJECTS an `env` key (writing one there breaks OpenCode). A User env var is the right home.
+    [Environment]::SetEnvironmentVariable('FIRECRAWL_URL', $fcUrl, 'User')
+    if ($fcKey) { [Environment]::SetEnvironmentVariable('FIRECRAWL_API_KEY', $fcKey, 'User') }
+    Say "  Firecrawl set as a user environment variable (open a new terminal to load it)"
   }
 
   Say "Done. Reload your tool (Claude: /reload-plugins; OpenCode: restart), then try:  /landing `"<your product>`""

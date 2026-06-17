@@ -16,12 +16,11 @@ You set the stage so the pipeline never trips on a missing tool. Follow `referen
    - `vercel whoami` (install via `npm i -g vercel` if missing) → Vercel auth state.
    - Firecrawl reachable? Detect the URL across **multiple locations** — the API key is OPTIONAL
      (self-hosted Firecrawl often needs none; only the URL matters):
-     1. Shell env `$FIRECRAWL_URL`
+     1. Shell env `$FIRECRAWL_URL` (this is how OpenCode sees it — OpenCode inherits the shell env)
      2. Project `.env` / `.env.local` (grep for `FIRECRAWL_URL=`)
-     3. `~/.claude/settings.json` → `.env.FIRECRAWL_URL` block
-        *(note: OpenCode does NOT read `~/.claude/settings.json` — that is why we must also check
-        OpenCode's own config and the shell/project env)*
-     4. OpenCode config `~/.config/opencode/` → any `FIRECRAWL_URL` entry
+     3. `~/.claude/settings.json` → `.env.FIRECRAWL_URL` block (Claude Code only — OpenCode does
+        NOT read this file, which is why the shell env above is the cross-tool source of truth)
+     4. The shell profile (`~/.zshrc` / `~/.bashrc` / `~/.profile`) → `export FIRECRAWL_URL=` line
      If a URL is found, probe it: `curl -sS -m 8 -o /dev/null -w '%{http_code}' "$FIRECRAWL_URL"`;
      a 2xx/3xx/4xx response (i.e. the server answered) means **Ready**.
      `FIRECRAWL_API_KEY` — check the same locations; if present use it; if absent that is fine,
