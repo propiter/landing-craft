@@ -1,7 +1,7 @@
 {
   "name": "landing-craft",
   "description": "End-to-end landing-page workflow for AI agents. ASKS the questions it needs (intake), then orchestrates specialist sub-agents — strategy, copy, design, build, motion, polish, SEO, review, deploy — to autonomously build AND deploy (GitHub + Vercel) a modern, elegant, intuitive, high-converting landing that does NOT look AI-generated, ready to view live. Triggers: build/create a landing page, marketing site, product page, sales page, hero, waitlist, 'armame una landing', 'landing que venda'. Commands: /landing (flagship: ask → build → deploy), /landing-new, /landing-build, /landing-review, /landing-ship. Next.js + Tailwind by default; framework-agnostic.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": {
     "name": "propiter"
   },

@@ -10,9 +10,9 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 + Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.5.0-black.svg)
-![Agents](https://img.shields.io/badge/sub--agents-11-ff5d01.svg)
-![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
+![Version](https://img.shields.io/badge/version-1.6.0-black.svg)
+![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
+![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
 
 </div>
@@ -53,7 +53,7 @@ irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | 
 ```
 
 The two terminal installers copy the **whole stack** — 6 skills (landing-craft + its bundled
-dependencies), 11 sub-agents and 5 commands — and **auto-detect Claude Code, OpenCode and Cursor**,
+dependencies), 12 sub-agents and 8 commands — and **auto-detect Claude Code, OpenCode and Cursor**,
 installing to each (OpenCode reads `~/.claude/skills/` natively). They fetch Impeccable too.
 You get plain commands: `/landing`, `/landing-new`, … After running one, **restart Claude Code or
 run `/reload-plugins`** to activate them. No admin rights, nothing runs in the background; re-run
@@ -65,10 +65,13 @@ anytime to update.
 ## Use it
 
 ```bash
-/landing "una landing para mi SaaS de facturación"       # ★ flagship: asks → builds → DEPLOYS (live URL)
+/landing "una landing para mi SaaS de facturación"       # ★ flagship: research → build → DEPLOY (live URL)
+/landing-init                                             # detect env + tooling, bootstrap
 /landing-new "API de facturación DIAN para developers"   # planning only → review the plan
 /landing-build                                            # build + motion + polish + SEO
 /landing-review                                           # render @ 390/768/1440, score, fix
+/landing-continue                                         # resume from the last completed phase
+/landing-status                                           # where the pipeline is (read-only)
 /landing-ship "<your product>"                            # full auto (no deploy)
 ```
 
@@ -138,8 +141,8 @@ landing-craft/
 ├── skills/landing-craft/
 │   ├── SKILL.md              the orchestrator brain — the pipeline & delegation
 │   └── references/           playbook (conversion) · animation-levels (subtle/medium/rich) · contrast-check (WCAG gate)
-├── agents/                   11 specialist sub-agents (research → architecture → … → deploy)
-├── commands/                 /landing · /landing-new · /landing-build · /landing-review · /landing-ship
+├── agents/                   12 specialist sub-agents (init · research → architecture → … → deploy)
+├── commands/                 /landing · /landing-init · /landing-new · /landing-build · /landing-review · /landing-continue · /landing-status · /landing-ship
 └── install.sh                one-command install into ~/.claude
 ```
 

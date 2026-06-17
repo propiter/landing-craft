@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Landing Craft
@@ -90,6 +90,10 @@ Detect the mode from the request; if unclear, ask once.
 - **`/landing-build`** → run Production (build → motion → polish, + seo) on the approved plan.
 - **`/landing-review`** → run the review loop and apply fixes (max 3 passes).
 - **`/landing-ship <brief>`** → full auto: every phase end-to-end, stopping only if a gate fails.
+- **`/landing-init`** → bootstrap the project: detect framework/tooling (Firecrawl, Vercel, gh,
+  Next.js), set up `landing/`, load the style profile — so the pipeline runs informed.
+- **`/landing-continue`** → resume the pipeline from the last completed phase (reads `landing/`).
+- **`/landing-status`** → show pipeline progress (read-only checklist).
 
 **Interactive vs Auto:** default to Interactive — pause after each phase, show the artifact, ask
 "¿seguimos o ajustamos?". Switch to Auto only when the user asks for speed.
@@ -160,6 +164,8 @@ not full content, to keep the thread thin.
 
 ## References (load on demand)
 
+- `references/_conventions.md` — **shared rules every agent follows** (orchestrator gate, artifact
+  bus, zero-debt, the 5 bars, stack defaults, models). Read this first; don't restate it per agent.
 - `references/market-research.md` *(the `landing-research` agent's method)* + `seo-geo` — the study.
 - `references/site-architecture.md` — multi-page map + per-theme unique sections (Architecture phase).
 - `references/alive-not-generic.md` — the 5th bar: real imagery, signature visual, scroll-reactive
