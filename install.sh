@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
-# landing-craft installer — copies the skill, sub-agents, and slash-commands into ~/.claude.
+# landing-craft installer — sets up the WHOLE stack in one command.
+# Copies landing-craft + its bundled skills (motion-craft, marketing-strategy, brand-voice,
+# seo-geo, design-review-loop) into ~/.claude, and fetches Impeccable (optional aesthetic engine).
 #
 #   curl -fsSL https://raw.githubusercontent.com/propiter/landing-craft/main/install.sh | bash
 #
@@ -11,10 +13,11 @@ set -euo pipefail
 REPO="${LANDING_CRAFT_REPO:-https://github.com/propiter/landing-craft}"
 BRANCH="${LANDING_CRAFT_BRANCH:-main}"
 CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+WITH_IMPECCABLE="${LANDING_CRAFT_IMPECCABLE:-1}"   # set to 0 to skip the third-party aesthetic engine
 
 say() { printf '\033[1m[landing-craft]\033[0m %s\n' "$1"; }
 
-say "Installing into $CLAUDE_DIR"
+say "Installing the stack into $CLAUDE_DIR"
 mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands"
 
 TMP="$(mktemp -d)"
@@ -30,14 +33,33 @@ else
   SRC="$TMP/landing-craft-$BRANCH"
 fi
 
-# Copy the skill (with its references), the 8 sub-agents, and the 4 slash-commands.
-cp -R "$SRC/skills/landing-craft" "$CLAUDE_DIR/skills/"
-cp "$SRC"/agents/landing-*.md     "$CLAUDE_DIR/agents/"
-cp "$SRC"/commands/landing*.md    "$CLAUDE_DIR/commands/"
+# Bundled skills (landing-craft + all its dependencies) — copy each cleanly.
+for dir in "$SRC"/skills/*/; do
+  name="$(basename "$dir")"
+  rm -rf "$CLAUDE_DIR/skills/$name"
+  cp -R "$dir" "$CLAUDE_DIR/skills/$name"
+done
+SKILL_COUNT="$(ls -d "$SRC"/skills/*/ | wc -l | tr -d ' ')"
 
-say "Installed:"
-say "  skill    → skills/landing-craft"
-say "  agents   → $(ls "$SRC"/agents/landing-*.md | wc -l | tr -d ' ') sub-agents"
+# landing-craft sub-agents + slash-commands.
+cp "$SRC"/agents/landing-*.md  "$CLAUDE_DIR/agents/"
+cp "$SRC"/commands/landing*.md "$CLAUDE_DIR/commands/"
+
+# Optional: Impeccable (third-party, Apache-2.0) — the aesthetic engine. Fetched from source so it
+# stays current; soft-fails so the rest of the stack always installs.
+if [ "$WITH_IMPECCABLE" = "1" ] && command -v git >/dev/null 2>&1; then
+  if git clone --depth 1 https://github.com/pbakaus/impeccable.git "$TMP/imp" >/dev/null 2>&1 \
+     && [ -d "$TMP/imp/.agents/skills/impeccable" ]; then
+    rm -rf "$CLAUDE_DIR/skills/impeccable"
+    cp -R "$TMP/imp/.agents/skills/impeccable" "$CLAUDE_DIR/skills/impeccable"
+    say "+ Impeccable aesthetic engine (Apache-2.0, by Paul Bakaus)"
+  else
+    say "(Impeccable optional — skipped; the design/polish agents fall back to built-in craft rules)"
+  fi
+fi
+
+say "Installed: $SKILL_COUNT skills + landing-craft sub-agents & commands"
+say "  skills   → landing-craft · motion-craft · marketing-strategy · brand-voice · seo-geo · design-review-loop${WITH_IMPECCABLE:+ · impeccable}"
 say "  commands → /landing  /landing-new  /landing-build  /landing-review  /landing-ship"
 echo
-say "Done. In Claude Code, run /reload-plugins (or restart it), then try:  /landing \"<your product>\""
+say "Done. In Claude Code run /reload-plugins (or restart it), then try:  /landing \"<your product>\""

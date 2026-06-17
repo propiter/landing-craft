@@ -10,7 +10,7 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 + Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.2.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.3.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-9-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
 
@@ -51,10 +51,11 @@ curl -fsSL https://raw.githubusercontent.com/propiter/landing-craft/main/install
 irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | iex
 ```
 
-The two terminal installers copy one skill, 9 sub-agents and 5 commands into your `~/.claude/`
-folder and give you plain commands — `/landing`, `/landing-new`, … After running one, **restart
-Claude Code or run `/reload-plugins`** to activate them. No admin rights, nothing runs in the
-background; re-run anytime to update.
+The two terminal installers copy the **whole stack** — 6 skills (landing-craft + its bundled
+dependencies), 9 sub-agents and 5 commands — into your `~/.claude/` folder, and fetch Impeccable.
+You get plain commands: `/landing`, `/landing-new`, … After running one, **restart Claude Code or
+run `/reload-plugins`** to activate them. No admin rights, nothing runs in the background; re-run
+anytime to update.
 
 > **Which should I use?** The Claude Code plugin (first option) is the cleanest — cross-platform and
 > auto-updates. The terminal scripts are handy if you'd rather one command outside Claude.
@@ -113,14 +114,19 @@ remembers your preference for next time):
 
 Built on **Motion + GSAP (free) + Lenis**, Next.js + Tailwind, every level `prefers-reduced-motion` safe.
 
-## Built on a stack, not from scratch
+## Batteries included — one command installs the whole stack
 
-Landing Craft is the **orchestrator**. The deep knowledge lives in skills it composes — install
-those for the full effect:
+Landing Craft is the **orchestrator**, and the installer bundles every skill it composes — so
+**nothing fails because a dependency is missing.** You never install pieces separately.
 
-- [`motion-craft`](https://github.com/propiter/motion-craft) — animation
-- `marketing-strategy` · `brand-voice` · `seo-geo` · `design-review-loop` — strategy, copy, SEO, review
-- [Impeccable](https://github.com/pbakaus/impeccable) — the aesthetic engine
+- **Bundled** (ship with the installer, Apache-2.0): `motion-craft` (animation),
+  `marketing-strategy`, `brand-voice`, `seo-geo`, `design-review-loop`.
+- **Fetched on install** (optional aesthetic engine, Apache-2.0):
+  [Impeccable](https://github.com/pbakaus/impeccable) by Paul Bakaus — pulled from its source so it
+  stays current, not forked. Skip it with `LANDING_CRAFT_IMPECCABLE=0`.
+
+If a piece is ever missing, the agents degrade gracefully (e.g. the design/polish phases apply the
+craft rules by hand instead of calling Impeccable).
 
 ## What's inside
 
@@ -133,6 +139,15 @@ landing-craft/
 ├── commands/                 /landing · /landing-new · /landing-build · /landing-review · /landing-ship
 └── install.sh                one-command install into ~/.claude
 ```
+
+## Credits
+
+Built on the shoulders of open source (all Apache-2.0):
+
+- [Impeccable](https://github.com/pbakaus/impeccable) by **Paul Bakaus** — the aesthetic engine,
+  fetched at install time.
+- Bundled skills: `motion-craft`, `marketing-strategy`, `brand-voice`, `seo-geo`,
+  `design-review-loop`.
 
 ## License
 
