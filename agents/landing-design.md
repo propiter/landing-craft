@@ -33,7 +33,10 @@ note where the build phase should invoke them.
 4. **Spacing & layout** — base unit, section rhythm, container widths, where to break the grid /
    use asymmetry so it doesn't read as a template.
 5. **Component style** — buttons, cards, inputs: radius, shadow philosophy, borders, density.
-6. **Imagery** — real product shots / screenshots / code over generic illustrations.
+6. **Imagery — spell out the ASSET LIST** (see `references/assets.md`). Name every image the design
+   needs and tag each **GENERATE** (signature hero visual as crafted SVG / HTML-render, OG card,
+   favicons, decorative SVGs) or **PROVIDE** (real logo, product/team photos). Real product shots /
+   screenshots over generic illustrations; never stock filler. The build phase produces this list.
 
 ## Output
 Write `landing/design.md` with a copy-pasteable **Tailwind theme** (`tailwind.config` →

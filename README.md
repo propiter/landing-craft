@@ -12,7 +12,7 @@ design → build → motion → polish → SEO → review → **deploy** (GitHub
 interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.7.1-black.svg)
+![Version](https://img.shields.io/badge/version-1.8.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
@@ -70,7 +70,7 @@ curl -fsSL https://raw.githubusercontent.com/propiter/landing-craft/main/install
 irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | iex
 ```
 
-The two terminal installers copy the **whole stack** — 6 skills (landing-craft + its bundled
+The two terminal installers copy the **whole stack** — 7 skills (landing-craft + its bundled
 dependencies), 12 sub-agents and 8 commands — and **auto-detect Claude Code, OpenCode and Cursor**,
 installing to each (OpenCode reads `~/.claude/skills/` natively). They fetch Impeccable too.
 You get plain commands: `/landing`, `/landing-new`, … After running one, **restart Claude Code or
@@ -144,7 +144,9 @@ Landing Craft is the **orchestrator**, and the installer bundles every skill it 
 **nothing fails because a dependency is missing.** You never install pieces separately.
 
 - **Bundled** (ship with the installer, Apache-2.0): `motion-craft` (animation),
-  `marketing-strategy`, `brand-voice`, `seo-geo`, `design-review-loop`.
+  `marketing-strategy`, `brand-voice`, `seo-geo`, `design-review-loop`, `web-assets` (image/OG/favicon
+  generation). The build phase **generates the signature visual, OG card and favicons** (installs
+  Playwright if missing) and only asks you for the real logo/photos.
 - **Fetched on install** (optional aesthetic engine, Apache-2.0):
   [Impeccable](https://github.com/pbakaus/impeccable) by Paul Bakaus — pulled from its source so it
   stays current, not forked. Skip it with `LANDING_CRAFT_IMPECCABLE=0`.
@@ -172,7 +174,7 @@ Built on the shoulders of open source (all Apache-2.0):
 - [Impeccable](https://github.com/pbakaus/impeccable) by **Paul Bakaus** — the aesthetic engine,
   fetched at install time.
 - Bundled skills: `motion-craft`, `marketing-strategy`, `brand-voice`, `seo-geo`,
-  `design-review-loop`.
+  `design-review-loop`, `web-assets`.
 
 ## License
 

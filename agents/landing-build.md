@@ -28,12 +28,17 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
    spacing and radius become Tailwind theme tokens; components use Tailwind utility classes that
    reference them. **NO hardcoded hex/px and NO inline `<style>` token dumps** — the theme is the
    single source of truth. (The motion phase adds `motion`/`gsap`/`lenis` per the intensity level.)
-2. **Build section by section** in the playbook order. Semantic HTML (`header`, `section`, `main`,
+2. **Generate assets into `public/` (use `web-assets`) — see `references/assets.md`.** Create
+   `public/`, GENERATE the signature hero visual (a crafted SVG or an HTML scene rendered via
+   Playwright), the OG card, favicons (icotool), and decorative SVGs. **Install Playwright if missing**
+   (`npx playwright install chromium`). Fetch the real logo/photos research found; otherwise leave
+   on-brand **named placeholders** and tell the user to swap them. NEVER point an `<img>` at a missing file.
+3. **Build section by section** in the playbook order. Semantic HTML (`header`, `section`, `main`,
    `nav`), real headings hierarchy, one `<h1>`.
-3. **Mobile-first.** The hero promise + primary CTA must land above the fold at 390px.
-4. **One primary CTA identity**, repeated; secondaries are ghost/link.
-5. **Accessibility from the start** — labels, alt text, focus order, 44px tap targets, AA contrast.
-6. **Performance** — the LCP element is the hero; defer below-fold assets; no layout shift.
+4. **Mobile-first.** The hero promise + primary CTA must land above the fold at 390px.
+5. **One primary CTA identity**, repeated; secondaries are ghost/link.
+6. **Accessibility from the start** — labels, alt text, focus order, 44px tap targets, AA contrast.
+7. **Performance** — the LCP element is the hero; defer below-fold assets; no layout shift.
 
 Do NOT add animation here (that's the motion phase) beyond static styles. Keep components
 **reusable — zero duplicated markup** across pages (one `Header`/`Footer`/`Section`/`Button`).

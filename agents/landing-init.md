@@ -15,6 +15,8 @@ You set the stage so the pipeline never trips on a missing tool. Follow `referen
    - `gh auth status` → GitHub ready?
    - `vercel whoami` (install via `npm i -g vercel` if missing) → Vercel auth state.
    - Firecrawl reachable? (`curl -sS -m 8 -o /dev/null -w '%{http_code}' $FIRECRAWL_URL` if configured.)
+   - **Playwright** (for asset rendering + the pre-deploy visual test): are browsers present? If
+     not, note it'll auto-install on first use (`npx playwright install chromium`). `icotool` for favicons?
    - engram available? Node/pnpm present?
 4. **Style profile** — `mem_search landing-craft/style-profile`; if absent, note the defaults
    (Next.js+Tailwind, animation `medium`, no hardcoded tokens).

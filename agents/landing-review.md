@@ -13,8 +13,11 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
 `skills/landing-craft/references/playbook.md`.
 
 ## Do
-1. **Render** the running landing at 390, 768, 1440 (start the dev server if needed). Screenshot
-   each. Look — don't guess.
+1. **Render & verify with Playwright — install it if missing.** If Playwright/browsers aren't
+   present, install first (`npx playwright install chromium`, or use the Playwright MCP). Start the
+   dev server and render **EVERY page** at 390/768/1440; screenshot each and LOOK — don't guess.
+   Check for **broken images** (404 / missing assets), broken internal links, and console errors.
+   Nothing ships broken — this runs BEFORE deploy.
 2. **Contrast gate (MANDATORY — never skip, never deploy without it).** Inject the WCAG scorer from
    `references/contrast-check.md` via `page.evaluate` at 1440 + 390, plus hover/focus states. ANY
    element below AA (4.5:1 normal / 3.0:1 large or UI) is an automatic **FAIL** — route the fix to
