@@ -21,9 +21,11 @@ and you never reference an asset file you didn't generate. Not every page needs 
 analytics — but a declared thing that doesn't work is debt.
 
 ## Load first
-Read `landing/copy.md` and `landing/design.md` (both required). **Framework: Next.js (App Router) +
-Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user EXPLICITLY said so
-(or the existing project already uses one). Read the chosen animation intensity
+Read `landing/copy.md` and `landing/design.md` (both required), and
+`references/hardening.md` (the production bar — security headers, validated endpoints, typed env,
+CI/pre-commit, and the code-quality/architecture doctrine you BUILD UNDER). **Framework: Next.js
+(App Router) + Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
+EXPLICITLY said so (or the existing project already uses one). Read the chosen animation intensity
 (`subtle`/`medium`/`rich`) and `references/animation-levels.md` so the structure supports it.
 
 ## Do
@@ -31,10 +33,11 @@ Build into the **project HOME that init chose** (`~/Projets/landing/<name>/`, re
 — NEVER `$HOME` root, and NEVER inside the landing-craft skill's own repo or a clone of it. This is a
 standalone project; keep it fully isolated from the skill.
 0. **Read `landing/architecture.md` (the page map) — build ALL its pages**, not just the home/landing:
-   `app/page.tsx` (home) + `app/<page>/page.tsx` for about / contact / terms / privacy / FAQ, and
-   `app/blog/` (index + `[slug]`). Use **shared, reusable** `Header` / `Footer` / `Section` /
-   `Button` components — NO duplicated markup across pages. Each page exports its own `metadata`
-   (title/description) for SEO.
+   `src/app/page.tsx` (home) + `src/app/<page>/page.tsx` for about / contact / terms / privacy / FAQ,
+   and `src/app/blog/` (index + `[slug]`). Use the scalable `src/` layout from
+   `references/hardening.md` (`src/app` routes, `src/components/{ui,sections,motion}`, `src/lib`) and
+   **shared, reusable** `Header` / `Footer` / `Section` / `Button` components — NO duplicated markup
+   across pages. Each page exports its own `metadata` (title/description) for SEO.
 1. **Wire the design tokens into `tailwind.config` FIRST** — design.md's colour system, type scale,
    spacing and radius become Tailwind theme tokens; components use Tailwind utility classes that
    reference them. **NO hardcoded hex/px and NO inline `<style>` token dumps** — the theme is the
@@ -55,6 +58,35 @@ standalone project; keep it fully isolated from the skill.
    the form) — never `href="/"` or `href="#"` as a dead loop.
 6. **Accessibility from the start** — labels, alt text, focus order, 44px tap targets, AA contrast.
 7. **Performance** — the LCP element is the hero; defer below-fold assets; no layout shift.
+8. **Harden it — production-grade, not a demo** (per `references/hardening.md`):
+   - **Security headers** — add the `async headers()` block to `next.config.ts` for ALL routes
+     (CSP, HSTS, `X-Content-Type-Options: nosniff`, `X-Frame-Options`, `Referrer-Policy`,
+     `Permissions-Policy`). The CSP must allow the analytics domains and the form endpoint origin
+     `landing-seo` will use — ship `Content-Security-Policy-Report-Only` first if you can't fully
+     test it; a broken CSP must NEVER break the site.
+   - **Typed, validated env** — create `src/lib/env.ts` (zod-validate every `NEXT_PUBLIC_*`/server
+     var, fail fast on misconfig). Components and routes import `env` from there — NEVER
+     `process.env` directly. This is where `.env.example` vars get read.
+   - **Hardened API route** — IF the architecture included a form, the `/api/contact` route ships
+     with zod body validation, a body-size guard, in-memory token-bucket rate-limiting per IP (note
+     the Upstash/Vercel KV upgrade for serverless), the honeypot, and structured errors that never
+     leak internals.
+   - **CI + pre-commit + Dependabot** — write the TEMPLATES into the GENERATED project:
+     `.github/workflows/ci.yml` (install → lint → typecheck → build, package-manager-aware), husky +
+     lint-staged + `.prettierrc` + the `package.json` scripts (`lint`/`typecheck`/`format`/`prepare`),
+     and `.github/dependabot.yml` (npm, weekly, grouped).
+
+**Code quality & architecture doctrine — build like a senior engineer** (per `references/hardening.md`):
+- **Strict TypeScript** (`strict: true`, `noUncheckedIndexedAccess`), NO `any`, no `@ts-ignore`
+  without a reason — the compiler is a free reviewer.
+- **Reusable atomic components, ZERO duplicated markup** — one `Button`/`Header`/`Footer`/`Section`;
+  presentational vs container split; small focused components; sections COMPOSE primitives.
+- **Logic in `src/lib`** (`*-data.ts`, `seo.ts`, `env.ts`, `utils.ts`) — NEVER business logic inside
+  JSX. JSX renders; it does not compute.
+- **Scalable structure** — `src/app` (routes), `src/components/{ui,sections,motion}`, `src/lib`;
+  named exports, kebab-case files / PascalCase components, one component per file.
+- **No spaghetti, no premature abstraction** — reusable over clever; design tokens in
+  `tailwind.config` as the single source of truth; no hardcoded hex/px.
 
 Do NOT add animation here (that's the motion phase) beyond static styles. Keep components
 **reusable — zero duplicated markup** across pages (one `Header`/`Footer`/`Section`/`Button`).

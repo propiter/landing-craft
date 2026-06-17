@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "A phased, multi-agent workflow that asks what it needs, then autonomously builds AND deploys modern, high-converting landing pages that don't look AI-generated.",
-    "version": "1.10.2"
+    "version": "1.11.0"
   },
   "plugins": [
     {
       "name": "landing-craft",
       "source": "./",
       "description": "Leads with an autonomous market study, then orchestrates 12 sub-agents (init → research → strategy → architecture → copy → design → build (multi-page) → motion → polish → seo → review → deploy) to ship a modern, high-converting, multi-page site that doesn't look AI-generated. Bundles the design stack (motion-craft, marketing-strategy, brand-voice, seo-geo, design-review-loop, web-assets) + fetches Impeccable; generates its own assets; analytics-ready; Next.js + Tailwind; Claude Code · OpenCode · Cursor.",
-      "version": "1.10.2",
+      "version": "1.11.0",
       "author": {
         "name": "propiter"
       },

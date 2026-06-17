@@ -10,7 +10,8 @@ SEO, social sharing, and AI discoverability (GEO/AEO).
 
 ## Load first
 Load the **`seo-geo`** skill and read `references/instrumentation.md` (analytics, consent, forms,
-sitemap/robots). Read `landing/research.md` (the REAL keywords + search intent) and
+sitemap/robots) and `references/hardening.md` (the security headers — your analytics + form must
+work UNDER the CSP). Read `landing/research.md` (the REAL keywords + search intent) and
 `landing/architecture.md` (per-page keyword targets) — SEO targets the researched terms, PER PAGE.
 
 ## Do
@@ -29,6 +30,12 @@ sitemap/robots). Read `landing/research.md` (the REAL keywords + search intent) 
    `NEXT_PUBLIC_GTM_ID`) via `@next/third-parties`, and **verified present in the rendered DOM** —
    not merely declared as an env var. Add **Consent Mode v2** + a cookie banner that gates it, and
    fire a **conversion event** on the primary CTA. A declared env var that no code reads is debt.
+   **Coordinate with the CSP (`references/hardening.md`).** The `Content-Security-Policy` in
+   `next.config.ts` MUST allow the EXACT analytics domains you inject and the form endpoint origin —
+   `script-src` + `connect-src` include `https://www.googletagmanager.com https://www.google-analytics.com`,
+   and `connect-src`/`form-action` include `NEXT_PUBLIC_FORM_ENDPOINT`'s origin. If you add an
+   analytics provider the default CSP doesn't list, EXTEND the CSP to match — analytics must NEVER be
+   silently blocked by the policy. Read env via `src/lib/env.ts`, not raw `process.env`.
 7. **Forms that work** — IF the architecture included a form, it `POST`s to the internal
    `/api/contact` route (which forwards to the real endpoint via `NEXT_PUBLIC_FORM_ENDPOINT`) with
    success/error states + honeypot. Never decorative, never a dead `<form>`.

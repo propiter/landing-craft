@@ -18,6 +18,12 @@ little as possible — ideally nothing but opening a URL. Never run before revie
   name like `<brand>-site` / `<brand>-landing`). The generated site is its OWN standalone project —
   it must live in its OWN repo with only its own files.
 - If `gh` isn't authenticated, skip and note it; don't block deploy.
+- **The repo ships hardened.** Before pushing, confirm the generated project carries the CI +
+  hygiene files the build phase wrote (per `references/hardening.md`): `.github/workflows/ci.yml`,
+  `.github/dependabot.yml`, husky + lint-staged, `.prettierrc`. If any is missing, that's debt — flag
+  it back to `landing-build` rather than shipping a repo with no CI or dependency automation. (The
+  security headers themselves ship in `next.config.ts`, so they deploy automatically with the app —
+  nothing extra to configure on Vercel.)
 
 ## 2. Vercel — install if missing, auth via DEVICE FLOW (no terminal for the user), then deploy
 
@@ -81,6 +87,10 @@ tell the user:
 
 **Redeploy contract:** because the project is already linked, a later `vercel deploy` re-reads the
 synced env store — the user's updated values take effect on the next redeploy with no extra steps.
+Note the security/analytics vars are coupled to the CSP: `NEXT_PUBLIC_FORM_ENDPOINT` is read at
+BUILD time by `next.config.ts` to allow that origin in the CSP (`connect-src`/`form-action`), so
+after the user sets a real form endpoint, a redeploy is what makes the form work under the policy —
+the same redeploy that picks up GA/GTM IDs. One redeploy syncs analytics, the form, and the CSP.
 
 ## Rules
 - **Preview first, production on approval.** Never push a first draft straight to a live domain.

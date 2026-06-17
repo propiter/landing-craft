@@ -10,7 +10,8 @@ You are the gate. Nothing ships until you pass it. You judge with fresh eyes aga
 ## Load first
 Load the **`design-review-loop`** skill (Playwright render → screenshot at 390/768/1440 → critique
 → refine) and read `landing/strategy.md`, `landing/copy.md`, `landing/design.md`,
-`skills/landing-craft/references/playbook.md`.
+`skills/landing-craft/references/playbook.md`, and `references/hardening.md` (the production bar you
+verify — security headers, validated endpoints, typed env, strict TS, atomic architecture).
 
 ## Do
 1. **Render & verify with Playwright — install it if missing.** If Playwright/browsers aren't
@@ -56,6 +57,29 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
    - **Analytics/consent IF intended by the strategy** — the GA/GTM script is actually present in
      the rendered DOM and consent gates it. (If the strategy didn't call for analytics, skip.)
    Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.
+6. **Hardening gate (production-grade — MANDATORY, research-proportionate).** Verify the site is
+   shipped hardened, not as a demo (per `references/hardening.md`). Check ONLY what the architecture
+   built, but for those:
+   - **Security headers present** — `curl -I <url>` (or `page.evaluate`/response headers) shows
+     `Content-Security-Policy` (or `…-Report-Only`), `Strict-Transport-Security`, and
+     `X-Content-Type-Options: nosniff`. A site missing security headers is a **FAIL**. Confirm the
+     CSP allows the analytics domains injected and the form endpoint origin (analytics/form must NOT
+     be blocked).
+   - **Public endpoint validated + rate-limited** — IF a `/api/contact` (or any public POST) exists,
+     `grep` confirms zod schema validation AND a rate limiter in the route. An unvalidated public
+     endpoint is a **FAIL**.
+   - **Env typed/validated** — `src/lib/env.ts` exists and components/routes import from it; `grep`
+     for raw `process.env.NEXT_PUBLIC_` usage in `src/components`/`src/app` (outside `env.ts`,
+     `next.config.ts`'s CSP origin read, and `@next/third-parties` glue) → should be none. Only the
+     architecture's vars are listed (unread var = debt).
+   - **Types & lint pass** — run `tsc --noEmit` and `lint` (npm/pnpm/yarn per the lockfile); BOTH
+     must exit 0. No `any`/`@ts-ignore` without a reason. Either failing is a **FAIL**.
+   - **CI + pre-commit + Dependabot ship in the repo** — `.github/workflows/ci.yml`, husky +
+     lint-staged, `.prettierrc`, `.github/dependabot.yml` all exist.
+   - **Architecture** — spot-check reusable atomic components (one `Button`/`Header`/`Footer`/
+     `Section`, no duplicated markup), logic in `src/lib` (not in JSX), and tokens in
+     `tailwind.config` (no hardcoded hex/px). Spaghetti or duplicated markup is debt → fix before PASS.
+   Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.
 
 ## Output
 Return a verdict: **PASS** or **FAIL**, plus a table of issues `Severity · Where · Fix`. If FAIL,
@@ -63,8 +87,10 @@ hand the fixes to `landing-polish` (or upstream if it's a copy/design problem) a
 3 passes. Only return PASS when both bars are met. Save `landing/review.md`.
 
 **You are the zero-debt backstop.** Any debt you find — duplicated markup, dead links, missing
-hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **or any
+hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **any
 scaffolding-without-implementation the wiring gate catches (dead CTAs, decorative forms, unread env
-vars, missing assets, declared-but-unmounted analytics)** — is FIXED before PASS, never just noted.
-The contract is COHERENCE between what was declared and what works, not a fixed feature set. The site
-ships with no known debt.
+vars, missing assets, declared-but-unmounted analytics), or any production-hardening miss the
+hardening gate catches (no security headers, an unvalidated/unthrottled public endpoint, untyped
+env, failing `tsc`/`lint`, missing CI/pre-commit, spaghetti)** — is FIXED before PASS, never just
+noted. The contract is COHERENCE between what was declared and what works, plus a production bar
+(safe + maintainable), not a fixed feature set. The site ships with no known debt.

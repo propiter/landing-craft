@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.10.2"
+  version: "1.11.0"
 ---
 
 # Landing Craft
@@ -171,6 +171,11 @@ not full content, to keep the thread thin.
 - **Accessible & fast** — AA contrast **MEASURED, not eyeballed** (run the scorer in
   `references/contrast-check.md`; it's a hard gate before deploy), focus states, semantic HTML,
   Core Web Vitals green.
+- **Production-hardened & best-practice** — every generated site ships hardened (security headers,
+  validated + rate-limited public endpoints, typed/validated env) and written like a senior
+  engineer's codebase (strict TS, reusable atomic components, no duplicated markup, no spaghetti,
+  tokens single-sourced) with CI + pre-commit + Dependabot. Per `references/hardening.md`; `review`
+  enforces it.
 
 ## References (load on demand)
 
@@ -191,6 +196,11 @@ not full content, to keep the thread thin.
   favicon set** (never the framework default) and SVGs (via bundled `web-assets` + Playwright,
   **installed if missing**) as swappable named files; ASK the user only for real photos. Load in
   design + build. No `<img>` points at a missing file; nothing ships unbranded.
+- `references/hardening.md` — the **production bar**: security headers (CSP/HSTS/nosniff), a
+  hardened `/api/contact` (zod + rate-limit + honeypot), typed/validated env (`src/lib/env.ts`),
+  CI + husky/lint-staged/prettier + Dependabot templates, and the code-quality/architecture doctrine
+  (strict TS, atomic reusable components, logic in `src/lib`, tokens single-sourced). Load in build +
+  seo + review + deploy.
 
 ## Portability — works in Claude Code AND OpenCode
 

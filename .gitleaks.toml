@@ -1,0 +1,59 @@
+# .gitleaks.toml — custom secret-scanning rules for landing-craft (public repo).
+# Extends gitleaks defaults. Goal: catch private-infrastructure URLs if they ever
+# slip into a commit (the incident this project already experienced).
+#
+# Run locally:  gitleaks detect --source . --config .gitleaks.toml
+
+title = "landing-craft gitleaks config"
+
+[extend]
+  # Inherit all upstream built-in rules from the gitleaks default rule set.
+  useDefault = true
+
+# ── CUSTOM RULES ─────────────────────────────────────────────────────────────
+
+[[rules]]
+  id          = "private-infra-url"
+  description = "Private infrastructure hostname leaked in public repo"
+  # Matches private hostnames this org uses internally:
+  #   - whitelabel.lat (or subdomains)
+  #   - automation.<anything>  (internal n8n / automation instances)
+  #   - *.lab.<tld>  (internal lab subdomains)
+  #   - firecrawl.<private-host>  (self-hosted Firecrawl not on example.com)
+  regex = '''(?i)(https?://[a-z0-9._-]*(whitelabel\.lat|automation\.[a-z0-9][a-z0-9.-]{2,}|\.lab\.[a-z]{2,})[a-z0-9./_?=&%-]*)'''
+  tags  = ["private-infra", "url", "secret"]
+
+  # Paths to always scan (override any path allow-list below).
+  # Leaving this empty means scan every path.
+
+  [rules.allowlist]
+    description = "Legitimate placeholder domains used in documentation and examples"
+    regexTarget = "match"
+    regexes = [
+      # Generic placeholder patterns used in docs — these are NOT real endpoints.
+      '''your-n8n-or-formspree-endpoint\.example''',
+      '''automation\.example\.com''',
+      '''api\.pulse\.dev''',
+      '''example\.com''',
+      '''example\.org''',
+      '''example\.net''',
+      # GitHub raw / Actions URLs referencing this repo are fine.
+      '''raw\.githubusercontent\.com/propiter/landing-craft''',
+      '''github\.com/propiter/landing-craft''',
+    ]
+
+# ── GLOBAL ALLOWLIST ──────────────────────────────────────────────────────────
+
+[allowlist]
+  description = "Repo-wide allowlists"
+
+  # Ignore generated / vendored files and lock files.
+  paths = [
+    '''\.git/''',
+    '''node_modules/''',
+    '''\.lock$''',
+    '''package-lock\.json''',
+  ]
+
+  # Commits that were already scanned and cleared (add SHAs here after a false-positive review).
+  commits = []
