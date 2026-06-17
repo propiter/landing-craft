@@ -11,8 +11,9 @@ runs strategy → copy → design → build → motion → polish → SEO → re
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 ![Version](https://img.shields.io/badge/version-1.5.0-black.svg)
-![Agents](https://img.shields.io/badge/sub--agents-9-ff5d01.svg)
+![Agents](https://img.shields.io/badge/sub--agents-11-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-5-22c55e.svg)
+![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
 
 </div>
 
@@ -52,7 +53,8 @@ irm https://raw.githubusercontent.com/propiter/landing-craft/main/install.ps1 | 
 ```
 
 The two terminal installers copy the **whole stack** — 6 skills (landing-craft + its bundled
-dependencies), 9 sub-agents and 5 commands — into your `~/.claude/` folder, and fetch Impeccable.
+dependencies), 11 sub-agents and 5 commands — and **auto-detect Claude Code, OpenCode and Cursor**,
+installing to each (OpenCode reads `~/.claude/skills/` natively). They fetch Impeccable too.
 You get plain commands: `/landing`, `/landing-new`, … After running one, **restart Claude Code or
 run `/reload-plugins`** to activate them. No admin rights, nothing runs in the background; re-run
 anytime to update.
@@ -77,23 +79,24 @@ URL (it installs the Vercel CLI if missing and guides the one-time login).
 ## The pipeline
 
 ```
-  intake ─► strategy ─┬─► copy ───┐
-   (ASK)              └─► design ──┴─► build ─► motion ─► polish ─┐
-                                            build ─► seo ─────────┴─► review ⭯ ─► deploy
+  research ─► strategy ─► architecture ─┬─► copy ───┐
+  (market study)                        └─► design ─┴─► build (multi-page) ─► motion ─► polish ─┐
+                                                            build ─► seo ──────────────────────┴─► review ⭯ ─► deploy
 ```
 
 | # | Phase | Sub-agent | What it guarantees |
 |---|-------|-----------|--------------------|
-| 0 | Intake | *orchestrator* | Asks the few questions that change the output — never builds blind |
-| 1 | Strategy | `landing-strategy` | Positioning, ICP, core promise, offer — the foundation |
-| 2 | Copy | `landing-copy` | Anti-slop conversion copy; the 5-second test passes |
-| 3 | Design | `landing-design` | A deliberate visual system — the anti-"made with AI" phase |
-| 4 | Build | `landing-build` | Real code (Next.js + Tailwind by default), mobile-first, accessible |
-| 5 | Motion | `landing-motion` | One hero reveal + micro-interactions, 60fps, reduced-motion safe |
-| 6 | Polish | `landing-polish` | The craft pass — type, spacing, contrast, responsive, states |
-| 7 | SEO | `landing-seo` | Meta, OG, JSON-LD, Core Web Vitals, `llms.txt` |
-| 8 | Review | `landing-review` | Renders & scores craft + conversion; loops until it passes |
-| 9 | Deploy | `landing-deploy` | Pushes to GitHub + deploys to Vercel; installs the CLI & guides first-time login |
+| 0 | Research | `landing-research` | Autonomous market study — scrape competitors, keywords, audience, alive refs, the GAP |
+| 1 | Strategy | `landing-strategy` | Positioning, ICP, core promise, offer (grounded in research) |
+| 2 | Architecture | `landing-architecture` | The page map (multi-page) + the UNIQUE per-theme section plan |
+| 3 | Copy | `landing-copy` | Research-backed conversion copy; the 5-second test passes |
+| 4 | Design | `landing-design` | A signature visual + real imagery — the anti-"made with AI" phase |
+| 5 | Build | `landing-build` | Multi-page Next.js + Tailwind, mobile-first, accessible |
+| 6 | Motion | `landing-motion` | Scroll-reactive motion at the chosen intensity, reduced-motion safe |
+| 7 | Polish | `landing-polish` | Craft pass — type, spacing, contrast (measured), responsive, states |
+| 8 | SEO | `landing-seo` | Meta, OG, JSON-LD, CWV, llms.txt per page, researched keywords |
+| 9 | Review | `landing-review` | Renders & scores the 5 bars + contrast gate; loops until it passes |
+| 10 | Deploy | `landing-deploy` | GitHub + Vercel; installs the CLI & guides first-time login |
 
 ## The four bars (enforced every phase)
 
@@ -135,7 +138,7 @@ landing-craft/
 ├── skills/landing-craft/
 │   ├── SKILL.md              the orchestrator brain — the pipeline & delegation
 │   └── references/           playbook (conversion) · animation-levels (subtle/medium/rich) · contrast-check (WCAG gate)
-├── agents/                   9 specialist sub-agents (one per phase, incl. deploy)
+├── agents/                   11 specialist sub-agents (research → architecture → … → deploy)
 ├── commands/                 /landing · /landing-new · /landing-build · /landing-review · /landing-ship
 └── install.sh                one-command install into ~/.claude
 ```

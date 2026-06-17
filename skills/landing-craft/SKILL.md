@@ -31,6 +31,16 @@ Every landing this workflow ships must clear FIVE bars. If any fails, it is not 
    **scroll-reactive motion** — things enter and move as you scroll. "Pretty but generic/dead"
    fails this bar. Run the vibe test in `references/alive-not-generic.md` before sign-off.
 
+## Zero technical debt (always-on, every phase)
+
+Every agent operates under a no-debt rule: **the moment you spot a bug, a flaw, a smell, a broken
+edge case, a dead link, duplicated code, or a clear improvement — fix it on the spot and CONTINUE.**
+Don't leave a TODO, don't defer it, don't stop to ask. This covers the generated site (a11y/contrast
+misses, broken responsive, missing states, hardcoded values, repetition) AND the workflow's own
+artifacts. Later phases RE-CHECK earlier work and repair anything that slipped; `review` is the
+backstop. When the orchestrator delegates, it tells each sub-agent: *honor zero-debt — fix what you
+find and keep going.* The product ships complete — **no known debt, nothing "to fix later".**
+
 ## The Pipeline (the DAG)
 
 ```

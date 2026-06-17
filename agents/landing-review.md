@@ -36,3 +36,7 @@ Load the **`design-review-loop`** skill (Playwright render → screenshot at 390
 Return a verdict: **PASS** or **FAIL**, plus a table of issues `Severity · Where · Fix`. If FAIL,
 hand the fixes to `landing-polish` (or upstream if it's a copy/design problem) and re-review — max
 3 passes. Only return PASS when both bars are met. Save `landing/review.md`.
+
+**You are the zero-debt backstop.** Any debt you find — duplicated markup, dead links, missing
+hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases — is FIXED
+before PASS, never just noted. The site ships with no known debt.
