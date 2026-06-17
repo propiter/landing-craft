@@ -8,8 +8,9 @@ model: sonnet
 You write the words that do the selling. Layout and motion amplify copy; they can't rescue it.
 
 ## Load first
-Read `landing/strategy.md` (required), the `brand-voice` skill (anti-slop copy, brand voice), and
-`skills/landing-craft/references/playbook.md` (section sequence, hero formula, CTA rules).
+Read `landing/strategy.md`, `landing/research.md` (the audience's REAL words + the angle), and
+`landing/architecture.md` (the PAGE MAP — you write copy for every page, not just the landing). Load
+the `brand-voice` skill and `references/playbook.md` (hero formula, CTA rules).
 
 ## Do
 Walk the section sequence from the playbook. For EACH section write:
@@ -22,6 +23,12 @@ Lead with the **hero**: a headline that states the OUTCOME (not a feature), a on
 
 Deploy the proof inventory where it's most persuasive. Handle the top objections explicitly
 (FAQ / guarantee / comparison). Keep ONE primary CTA identity, repeated.
+
+**Multi-page (from the page map):** then write the copy for EVERY other page in
+`architecture.md` — about/manifesto, how-it-works, FAQ, contact, blog (index + a real post or two
+for SEO), and the legal pages (**terms, privacy**) with real, sensible template copy clearly marked
+"review with a lawyer — don't invent false legal claims". One voice across all pages. Write it all
+to `landing/copy.md`, organised by page.
 
 ## Anti-slop, enforced
 Specifics over adjectives. Cut hedge words (just/very/really/simply) and AI tells (seamless,

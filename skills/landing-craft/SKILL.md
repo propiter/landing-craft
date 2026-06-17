@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.6.1"
+  version: "1.7.0"
 ---
 
 # Landing Craft
@@ -44,9 +44,9 @@ find and keep going.* The product ships complete — **no known debt, nothing "t
 ## The Pipeline (the DAG)
 
 ```
-  research ─► strategy ─► architecture ─┬─► copy ───┐
-  (market study)                        └─► design ─┴─► build (multi-page) ─► motion ─► polish ─┐
-                                                            build ─► seo ──────────────────────┴─► review ⭯ ─► deploy
+  init ─► research ─► strategy ─► architecture ─┬─► copy ───┐
+  (env)  (market study)                        └─► design ─┴─► build (multi-page) ─► motion ─► polish ─┐
+                                                                    build ─► seo ──────────────────────┴─► review ⭯ ─► deploy
 ```
 
 - **Research** (Phase 0): an AUTONOMOUS market study — scrape the product + competitors, mine
@@ -65,6 +65,7 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 
 | Phase | Sub-agent | Loads / leans on | Produces |
 |-------|-----------|------------------|----------|
+| init | `landing-init` | Bash (env + tooling checks) | `_init.md` — framework/tooling readiness; bootstraps `landing/` (auto-runs in the flagship) |
 | 0. Research | `landing-research` | `marketing-strategy`, `seo-geo`, Firecrawl, WebSearch | `research.md` — product/competitor teardown, keywords/intent, emotional drivers, alive design refs, the GAP |
 | 1. Strategy | `landing-strategy` | `marketing-strategy` | positioning, ICP/JTBD, core promise, offer (grounded in research) |
 | 2. Architecture | `landing-architecture` | `site-architecture` | the page map (multi-page) + the UNIQUE per-theme section plan |
@@ -81,10 +82,11 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 
 Detect the mode from the request; if unclear, ask once.
 
-- **`/landing <prompt>`** → the flagship (DEEP mode). The skill **LEADS**: it researches the market
-  (scrape, competitors, keywords, audience), then runs EVERY phase autonomously — research →
+- **`/landing <prompt>`** → the flagship (DEEP mode). The skill **LEADS** and runs EVERYTHING
+  autonomously, from init to the deployed product — **init** (detect env + tooling) → research →
   strategy → architecture → copy → design → build (multi-page) → motion → polish → seo → review →
-  DEPLOY — **without interrogating you**. Hands you a live, market-current, multi-page site.
+  DEPLOY — **without interrogating you**. Auto-runs init if not done. Hands you a live,
+  market-current, multi-page site.
 - **`/landing-new <brief>`** → run Planning only (strategy → copy + design), then STOP and show the
   plan + visual direction for approval before building.
 - **`/landing-build`** → run Production (build → motion → polish, + seo) on the approved plan.
@@ -116,7 +118,7 @@ do NOT run an interview. Gather context by RESEARCHING, not by asking:
 A landing is the market study + a multi-page site, not a single file. If the user states a lasting
 preference ("siempre con muchas animaciones"), `mem_save` it to the profile. Never skip research.
 
-## Phase 9 — Deploy (hands-off; the user only opens a URL)
+## Deploy phase (final; hands-off — the user only opens a URL)
 
 After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing but open a live URL.
 
@@ -173,6 +175,8 @@ not full content, to keep the thread thin.
 - `references/playbook.md` — conversion architecture (hero formula, proof, CTA rules).
 - `references/animation-levels.md` — subtle/medium/rich motion + library stack.
 - `references/contrast-check.md` — the WCAG gate (measured, not eyeballed).
+- `references/instrumentation.md` — production-ready: GA4/GTM, consent, working forms, sitemap/robots,
+  `.env.example`. Load in seo + build (leave nothing as a dead stub).
 
 ## Portability — works in Claude Code AND OpenCode
 

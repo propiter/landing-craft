@@ -9,8 +9,9 @@ A landing nobody finds — or that looks broken when shared — sells nothing. Y
 SEO, social sharing, and AI discoverability (GEO/AEO).
 
 ## Load first
-Load the **`seo-geo`** skill (technical + on-page SEO, GEO/AEO, JSON-LD templates, Core Web
-Vitals). Read `landing/strategy.md` for the positioning, keywords, and audience language.
+Load the **`seo-geo`** skill and read `references/instrumentation.md` (analytics, consent, forms,
+sitemap/robots). Read `landing/research.md` (the REAL keywords + search intent) and
+`landing/architecture.md` (per-page keyword targets) — SEO targets the researched terms, PER PAGE.
 
 ## Do
 1. **Meta** — a `<title>` (≤ 60 chars, outcome + brand) and `meta description` (≤ 155, the promise
@@ -22,6 +23,13 @@ Vitals). Read `landing/strategy.md` for the positioning, keywords, and audience 
    ChatGPT/Perplexity/Google AI can cite it accurately.
 5. **Core Web Vitals** — LCP = hero, no CLS, preconnect/preload critical assets, images sized +
    lazy below fold.
+6. **Analytics — leave it ready.** Wire **GA4 and/or Google Tag Manager** behind env
+   (`NEXT_PUBLIC_GA_ID` / `NEXT_PUBLIC_GTM_ID`) via `@next/third-parties`, plus **Consent Mode v2** +
+   a cookie banner. Fire a **conversion event** on the primary CTA.
+7. **Forms that work** — the contact/lead form submits to a real endpoint (Next route / n8n webhook /
+   Formspree via env) with success/error states + honeypot. No dead `<form>`.
+8. **Sitemap + robots + per-page meta** — `app/sitemap.ts`, `app/robots.ts`, each page its own
+   `metadata` + JSON-LD; `llms.txt`. Write a `.env.example` listing every var the user must fill.
 
 ## Output
 The SEO/meta layer wired in + a short checklist of what's covered and what's pending (e.g. real

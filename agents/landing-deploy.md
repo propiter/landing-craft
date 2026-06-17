@@ -1,6 +1,6 @@
 ---
 name: landing-deploy
-description: Phase 9 (final) of landing-craft. Publishes the finished landing — pushes to GitHub (gh) and deploys to Vercel, installing the Vercel CLI if missing and guiding first-time auth. Hands the user a live URL. Runs only after landing-review PASSES.
+description: The final phase of landing-craft. Publishes the finished landing — pushes to GitHub (gh) and deploys to Vercel, installing the Vercel CLI if missing and guiding first-time auth. Hands the user a live URL. Runs only after landing-review PASSES.
 model: sonnet
 ---
 

@@ -19,6 +19,11 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
 (`subtle`/`medium`/`rich`) and `references/animation-levels.md` so the structure supports it.
 
 ## Do
+0. **Read `landing/architecture.md` (the page map) — build ALL its pages**, not just the home/landing:
+   `app/page.tsx` (home) + `app/<page>/page.tsx` for about / contact / terms / privacy / FAQ, and
+   `app/blog/` (index + `[slug]`). Use **shared, reusable** `Header` / `Footer` / `Section` /
+   `Button` components — NO duplicated markup across pages. Each page exports its own `metadata`
+   (title/description) for SEO.
 1. **Wire the design tokens into `tailwind.config` FIRST** — design.md's colour system, type scale,
    spacing and radius become Tailwind theme tokens; components use Tailwind utility classes that
    reference them. **NO hardcoded hex/px and NO inline `<style>` token dumps** — the theme is the
@@ -30,10 +35,11 @@ Tailwind — ALWAYS, by default. Never ask.** Only use another stack if the user
 5. **Accessibility from the start** — labels, alt text, focus order, 44px tap targets, AA contrast.
 6. **Performance** — the LCP element is the hero; defer below-fold assets; no layout shift.
 
-Do NOT add animation here (that's the motion phase) beyond static styles. Keep components small
-and composable.
+Do NOT add animation here (that's the motion phase) beyond static styles. Keep components
+**reusable — zero duplicated markup** across pages (one `Header`/`Footer`/`Section`/`Button`).
 
 ## Output
-A running landing. Start the dev server (e.g. `npm run dev`) and report the local URL. List the
-files created/changed and any gaps you had to flag (missing copy, missing asset). Hand off to the
+A running multi-page site (every page from the map). Start the dev server (e.g. `npm run dev`) and
+report the local URL. List the files created/changed and any gaps you had to flag (missing copy,
+missing asset). Hand off to the
 motion phase.
