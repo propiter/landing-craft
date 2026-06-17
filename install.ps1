@@ -25,16 +25,37 @@ function Copy-Skills($src, $destSkills) {
     Copy-Item -Recurse -Force $s.FullName $destSkills
   }
 }
-function Install-Target($src, $base, $skillsSub, $agentSub, $cmdSub) {
+# OpenCode/Cursor reject Claude's `tools:` string frontmatter — strip Claude-only keys, mark agents.
+function Oc-Transform($file, $destDir, $kind) {
+  $fm = 0; $out = New-Object System.Collections.Generic.List[string]
+  foreach ($line in (Get-Content -LiteralPath $file)) {
+    if ($line -match '^---\s*$') {
+      $out.Add($line); $fm++
+      if ($fm -eq 1 -and $kind -eq 'agent') { $out.Add('mode: subagent') }
+      continue
+    }
+    if ($fm -eq 1 -and $line -match '^(tools|model|effort|argument-hint):') { continue }
+    $out.Add($line)
+  }
+  Set-Content -LiteralPath (Join-Path $destDir (Split-Path $file -Leaf)) -Value $out
+}
+function Install-Target($src, $base, $skillsSub, $agentSub, $cmdSub, $transform) {
   foreach ($d in $skillsSub, $agentSub, $cmdSub) { New-Item -ItemType Directory -Force -Path (Join-Path $base $d) | Out-Null }
   Copy-Skills $src (Join-Path $base $skillsSub)
-  Copy-Item -Force (Join-Path $src 'agents/landing-*.md')  (Join-Path $base $agentSub)
-  Copy-Item -Force (Join-Path $src 'commands/landing*.md') (Join-Path $base $cmdSub)
+  $ad = Join-Path $base $agentSub; $cd = Join-Path $base $cmdSub
+  if ($transform) {
+    foreach ($f in (Get-ChildItem (Join-Path $src 'agents/landing-*.md')))  { Oc-Transform $f.FullName $ad 'agent' }
+    foreach ($f in (Get-ChildItem (Join-Path $src 'commands/landing*.md'))) { Oc-Transform $f.FullName $cd 'command' }
+  } else {
+    Copy-Item -Force (Join-Path $src 'agents/landing-*.md')  $ad
+    Copy-Item -Force (Join-Path $src 'commands/landing*.md') $cd
+  }
 }
 
 $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("landing-craft-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $tmp | Out-Null
 try {
+  Say "Fetching landing-craft…"
   if (Get-Command git -ErrorAction SilentlyContinue) {
     git clone --depth 1 --branch $Branch $Repo (Join-Path $tmp 'landing-craft') 2>$null | Out-Null
     $src = Join-Path $tmp 'landing-craft'
@@ -45,6 +66,7 @@ try {
   }
 
   if ($WithImpecc -eq '1' -and (Get-Command git -ErrorAction SilentlyContinue)) {
+    Say "Fetching Impeccable aesthetic engine… (the slow step — a few seconds)"
     try {
       git clone --depth 1 https://github.com/pbakaus/impeccable.git (Join-Path $tmp 'imp') 2>$null | Out-Null
       $impSrc = Join-Path $tmp 'imp/.agents/skills/impeccable'
@@ -55,17 +77,19 @@ try {
   $impLabel = if (Test-Path (Join-Path $src 'skills/impeccable')) { ' + impeccable' } else { '' }
   $installed = @()
 
+  Say "Installing $skillCount skills, sub-agents & commands to your tools…"
+
   # Claude Code (also feeds OpenCode, which reads ~/.claude/skills/)
-  Install-Target $src $ClaudeDir 'skills' 'agents' 'commands'
+  Install-Target $src $ClaudeDir 'skills' 'agents' 'commands' $false
   $installed += 'Claude'
 
   # OpenCode (skills free via ~/.claude/skills; mirror agents + commands)
   if ((Test-Path $OpencodeDir) -or (Get-Command opencode -ErrorAction SilentlyContinue)) {
-    Install-Target $src $OpencodeDir 'skills' 'agent' 'command'; $installed += 'OpenCode'
+    Install-Target $src $OpencodeDir 'skills' 'agent' 'command' $true; $installed += 'OpenCode'
   }
   # Cursor (best-effort)
   if ((Test-Path $CursorDir) -or (Get-Command cursor -ErrorAction SilentlyContinue)) {
-    Install-Target $src $CursorDir 'skills' 'agents' 'commands'; $installed += 'Cursor'
+    Install-Target $src $CursorDir 'skills' 'agents' 'commands' $true; $installed += 'Cursor'
   }
 
   Say "Installed $skillCount skills + sub-agents & commands to: $($installed -join ', ')"

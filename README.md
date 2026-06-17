@@ -12,7 +12,7 @@ design → build → motion → polish → SEO → review → **deploy** (GitHub
 interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.7.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.7.1-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
