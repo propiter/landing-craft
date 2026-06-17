@@ -2,18 +2,28 @@
 
 # 🚀 Landing Craft
 
-**SDD, but for landing pages.** A phased, multi-agent workflow that ships a modern, elegant,
-intuitive, **high-converting** landing — one that does *not* look AI-generated.
+**SDD, but for landing pages.** An autonomous, multi-agent workflow that **researches the market,
+designs, builds, and deploys** a modern, multi-page site that converts — and does *not* look
+AI-generated.
 
-You say *"armame una landing para X"*. It **asks the few questions it needs**, then autonomously
-runs strategy → copy → design → build → motion → polish → SEO → review — and **deploys it** (GitHub
-+ Vercel). It doesn't call it done until it **looks crafted, sells, and is live.**
+You say *"armame una landing para X"*. The skill **leads**: it runs a real market study (scrape
+competitors, mine keywords, profile the audience), then research → strategy → architecture → copy →
+design → build → motion → polish → SEO → review → **deploy** (GitHub + Vercel) — **without
+interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 ![Version](https://img.shields.io/badge/version-1.7.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
+
+</div>
+
+<div align="center">
+
+**Real market research** (scrapes competitors) · **multi-page** (landing + legal · blog · contact) ·
+**unique sections per theme** · **alive** (real imagery + scroll-reactive motion) ·
+**analytics-ready** (GA4/GTM · consent · working forms) · **zero technical debt**
 
 </div>
 
@@ -25,17 +35,25 @@ Pick the option that matches where you are. Each is basically one step.
 
 ### 🟣 Inside Claude Code — any OS (Windows · macOS · Linux) · recommended
 
-Type these **in the Claude Code prompt** (not your computer's terminal):
+Run these **one at a time** in the Claude Code prompt — paste one line, press **Enter**, then the
+next. **Do NOT paste all three together** (they'd concatenate into one broken command):
 
+**1.** add the marketplace:
 ```text
 /plugin marketplace add https://github.com/propiter/landing-craft.git
+```
+**2.** install the plugin:
+```text
 /plugin install landing-craft@landing-craft
+```
+**3.** activate it:
+```text
 /reload-plugins
 ```
 
-> ⚠️ Use the full **`https://…​.git`** URL. The short `owner/repo` form can fail with an
-> *"SSH host key… Host key verification failed"* error on machines set up to clone GitHub over SSH.
-> The HTTPS URL avoids that.
+> ⚠️ Use the full **`https://…​.git`** URL (not the short `owner/repo` form, which can fail with an
+> SSH *"Host key verification failed"* error). And one command per line — pasting the three at once
+> is the usual cause of a *"Malformed URL"* error.
 
 This works the same on **Windows**. After installing, the commands are namespaced:
 `/landing-craft:landing`, `/landing-craft:landing-new`, …
@@ -75,9 +93,9 @@ anytime to update.
 /landing-ship "<your product>"                            # full auto (no deploy)
 ```
 
-You don't need to know marketing — that's the strategy agent's job. With **`/landing`** you don't
-even need a brief: it asks the few questions it needs, builds autonomously, and hands you a live
-URL (it installs the Vercel CLI if missing and guides the one-time login).
+You don't need to know marketing — that's the research + strategy agents' job. With **`/landing`**
+you barely brief it: it **researches the market**, builds the multi-page site autonomously, and
+hands you a live URL (it installs the Vercel CLI if missing and guides the one-time login).
 
 ## The pipeline
 
@@ -101,11 +119,11 @@ URL (it installs the Vercel CLI if missing and guides the one-time login).
 | 9 | Review | `landing-review` | Renders & scores the 5 bars + contrast gate; loops until it passes |
 | 10 | Deploy | `landing-deploy` | GitHub + Vercel; installs the CLI & guides first-time login |
 
-## The four bars (enforced every phase)
+## The five bars (enforced every phase)
 
-> 1. It does **NOT look AI-generated**.  2. It **sells** (what/who/why/next in 5 seconds).
-> 3. It's **intuitive** (one obvious action per screen).  4. It's **crafted** (real motion, type,
-> contrast, speed, a11y).
+> 1. **NOT AI-generated**.  2. It **sells** (what/who/why/next in 5 seconds).  3. It's **intuitive**
+> (one obvious action per screen).  4. It's **crafted** (real motion, type, contrast, speed, a11y).
+> 5. It's **ALIVE** — real imagery, a signature visual, scroll-reactive motion, warmth (not flat).
 
 If any bar fails, it isn't done.
 
@@ -140,10 +158,11 @@ craft rules by hand instead of calling Impeccable).
 landing-craft/
 ├── skills/landing-craft/
 │   ├── SKILL.md              the orchestrator brain — the pipeline & delegation
-│   └── references/           playbook (conversion) · animation-levels (subtle/medium/rich) · contrast-check (WCAG gate)
+│   └── references/           _conventions · market-research · site-architecture · alive-not-generic
+│                             · playbook · animation-levels · contrast-check · instrumentation
 ├── agents/                   12 specialist sub-agents (init · research → architecture → … → deploy)
 ├── commands/                 /landing · /landing-init · /landing-new · /landing-build · /landing-review · /landing-continue · /landing-status · /landing-ship
-└── install.sh                one-command install into ~/.claude
+└── install.sh · install.ps1  cross-platform one-command install (Claude · OpenCode · Cursor)
 ```
 
 ## Credits
