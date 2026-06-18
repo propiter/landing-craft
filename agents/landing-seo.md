@@ -1,6 +1,6 @@
 ---
 name: landing-seo
-description: Phase 7 of landing-craft (runs in parallel with motion/polish). Makes the landing findable and shareable — meta tags, Open Graph/Twitter cards, JSON-LD schema, Core Web Vitals, and llms.txt for AI discovery. Reads the built landing and landing/strategy.md; applies the seo-geo skill.
+description: Phase 7 of landing-craft (runs in parallel with motion/polish). Makes the landing findable, shareable AND citable by AI answer engines — meta tags, Open Graph/Twitter cards, richer + entity JSON-LD schema (real data only), Core Web Vitals, an AI-welcoming robots.ts, llms.txt + llms-full.txt, freshness dates, and AI-referral analytics. Reads the built landing and landing/strategy.md; applies the seo-geo skill.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
 model: sonnet
 ---
@@ -20,9 +20,31 @@ work UNDER the CSP). Read `landing/research.md` (the REAL keywords + search inte
 2. **Open Graph + Twitter cards** — `og:title/description/image`, `twitter:card=summary_large_image`.
    **GENERATE the OG image** (via `web-assets`) before you reference it — never ship an
    `og:image`/asset reference that 404s when shared. Every asset you point at must EXIST as a file.
-3. **JSON-LD** — `Organization`/`Product`/`FAQPage`/`SoftwareApplication` as fits, with real data.
-4. **Crawl & AI** — semantic headings, canonical URL, `robots`, sitemap, and a `llms.txt` so
-   ChatGPT/Perplexity/Google AI can cite it accurately.
+3. **JSON-LD — richer + entity-deep, REAL DATA ONLY.** Emit only what each page truly is, only from
+   facts research/brand gave you (`references/checklist.md` §4C has every template):
+   - Keep `Organization`/`Product`/`FAQPage`/`Service`/`Offer` where they fit.
+   - `BreadcrumbList` on **every subpage**; `SoftwareApplication` for tools/SaaS/products (with
+     `offers`); `WebSite` + `potentialAction` `SearchAction` ONLY if the site has a real search route.
+   - **Entity depth / E-E-A-T** — `Organization` with `logo`, `foundingDate`, `contactPoint`, and the
+     founder as `Person` with real `sameAs` (real social/profile URLs from research), listed
+     CONSISTENTLY across pages so AI engines build and TRUST the brand's entity graph.
+   - **Freshness** — real `datePublished` + `dateModified` on pages/articles; `Article`/`BlogPosting`
+     (with `author` + dates) for blog posts when a blog exists.
+   - **NEVER fabricate** `Review`/`AggregateRating`/`sameAs`/founder/awards. If a fact isn't real,
+     OMIT that property or block — fake review schema is a Google manual penalty. Validate every block.
+4. **Crawl & AI discoverability (GEO) — make it CITABLE, not just crawlable.**
+   - **`app/robots.ts` that WELCOMES the AI answer-engine crawlers** (so the site can be cited):
+     `GPTBot`, `ChatGPT-User`, `OAI-SearchBot`, `ClaudeBot`, `anthropic-ai`, `Claude-User`,
+     `Claude-SearchBot`, `PerplexityBot`, `Perplexity-User`, `Google-Extended`, `Applebot-Extended`,
+     `CCBot`, `Bytespider`, plus normal `*`. Ship the documented TOGGLE
+     (`NEXT_PUBLIC_ALLOW_AI_BOTS`, default ON; set `"false"` to disallow AI bots) so a client can opt
+     out without a code change. STILL disallow `/api/` and sensitive paths for every bot. (Template:
+     `references/checklist.md` §4A — read env via `src/lib/env.ts`.)
+   - **`llms.txt` AND `llms-full.txt`** at the site root (`public/`), per llmstxt.org: `llms.txt` = a
+     concise index (title, one-line summary, page list with summaries, key facts/links);
+     `llms-full.txt` = the full primary content of the key pages as clean markdown for LLM ingestion.
+     Keep BOTH in sync with the real pages — every fact REAL and matching the live page (§4B).
+   - Semantic headings, canonical URL, sitemap with `<lastmod>` dates.
 5. **Core Web Vitals** — LCP = hero, no CLS, preconnect/preload critical assets, images sized +
    lazy below fold.
 6. **Analytics — wire it, don't just declare it.** IF the strategy calls for analytics, the GA4/GTM
@@ -36,14 +58,24 @@ work UNDER the CSP). Read `landing/research.md` (the REAL keywords + search inte
    and `connect-src`/`form-action` include `NEXT_PUBLIC_FORM_ENDPOINT`'s origin. If you add an
    analytics provider the default CSP doesn't list, EXTEND the CSP to match — analytics must NEVER be
    silently blocked by the policy. Read env via `src/lib/env.ts`, not raw `process.env`.
+   **AI-referral tracking (GEO ROI) — wire it when analytics ships.** Classify traffic arriving FROM
+   AI engines by `document.referrer` hostname (`chatgpt.com`, `chat.openai.com`, `perplexity.ai`,
+   `gemini.google.com`, `claude.ai`, `copilot.microsoft.com`, etc.) and fire a GA4 custom event
+   `ai_referral` with `ai_source` so the user can SEE AI-sourced traffic and measure GEO ROI. Add
+   `src/lib/ai-referrals.ts` (the hostname→source map) + the small client snippet mounted in
+   `layout.tsx`; register `ai_source` as a GA4 custom dimension. It's CSP-safe (only calls the
+   already-allowed `gtag`). Pattern: `references/checklist.md` §4E + instrumentation §2A.
 7. **Forms that work** — IF the architecture included a form, it `POST`s to the internal
    `/api/contact` route (which forwards to the real endpoint via `NEXT_PUBLIC_FORM_ENDPOINT`) with
    success/error states + honeypot. Never decorative, never a dead `<form>`.
-8. **Sitemap + robots + per-page meta** — `app/sitemap.ts`, `app/robots.ts`, each page its own
-   `metadata` + JSON-LD; `llms.txt`. Write a `.env.example` listing every var the user must fill —
-   and **every var you write to it must be consumed somewhere in `src`**; an unread var is debt
-   (wire it or remove it).
+8. **Sitemap + robots + per-page meta** — `app/sitemap.ts` (with `lastModified` dates), the
+   AI-welcoming `app/robots.ts` (step 4), each page its own `metadata` + JSON-LD (richer + entity,
+   with freshness dates); `llms.txt` + `llms-full.txt`. Write a `.env.example` listing every var the
+   user must fill (incl. `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_ALLOW_AI_BOTS`) — and **every var
+   you write to it must be consumed somewhere in `src`**; an unread var is debt (wire it or remove it).
 
 ## Output
-The SEO/meta layer wired in + a short checklist of what's covered and what's pending (e.g. real
-OG image, production URL for canonical). Report to the orchestrator.
+The SEO/meta + GEO layer wired in (AI-welcoming `robots.ts`, `llms.txt` + `llms-full.txt`, richer +
+entity JSON-LD from REAL data only, freshness dates, AI-referral analytics) + a short checklist of
+what's covered and what's pending (e.g. real OG image, production URL for canonical, real founder
+`sameAs` if research didn't surface them — omitted, not faked). Report to the orchestrator.

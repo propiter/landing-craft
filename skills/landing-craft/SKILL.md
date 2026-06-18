@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.12.0"
+  version: "1.13.0"
 ---
 
 # Landing Craft
@@ -56,9 +56,10 @@ find and keep going.* The product ships complete — **no known debt, nothing "t
 - **Planning**: `strategy → {copy, design}`, all grounded in the research.
 - **Production**: `build` (multi-page) → `motion` → `polish`, with `seo` (researched keywords) off `build`.
 - **Gate**: `review` is the comprehensive final audit — renders every page and scores the 5 bars
-  (incl. ALIVE) + contrast + the **wiring gate** + the **hardening/security gate**, returning a
-  phase-routed findings list. The **orchestrator loops** review → fixes → re-review (see *The review
-  loop*) until PASS or 3 passes.
+  (incl. ALIVE) + contrast + the **wiring gate** + the **hardening/security gate** + the **GEO gate**
+  (cited-by-AI: AI-crawler robots, `llms.txt`/`llms-full.txt`, entity schema, freshness, no fabricated
+  reviews), returning a phase-routed findings list. The **orchestrator loops** review → fixes →
+  re-review (see *The review loop*) until PASS or 3 passes.
 - **Deploy** (final): GitHub + Vercel — a live URL. Research, SEO and deploy are NOT optional.
 
 ## Phase → Sub-agent map
@@ -77,8 +78,8 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 | 5. Build | `landing-build` | Next.js + Tailwind | the multi-page site (tokens in tailwind.config, no hardcoded) |
 | 6. Motion | `landing-motion` | `motion-craft`, `animation-levels` | scroll-reactive motion at the chosen intensity, reduced-motion safe |
 | 7. Polish | `landing-polish` | Impeccable, `contrast-check` | craft pass, responsive, AA contrast (measured), focus states |
-| 8. SEO | `landing-seo` | `seo-geo` | meta/OG/JSON-LD/CWV/llms.txt per page, targeting the researched keywords |
-| 9. Review ⭯ | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic`, `hardening` | comprehensive audit (5 bars + contrast + **wiring gate** + **hardening/security gate**) → phase-routed findings; orchestrator loops fixes→re-review, max 3 (see *The review loop*) |
+| 8. SEO | `landing-seo` | `seo-geo` | meta/OG/JSON-LD/CWV per page + GEO (AI-welcoming `robots.ts`, `llms.txt`+`llms-full.txt`, richer + entity schema from REAL data, freshness dates, AI-referral analytics), targeting the researched keywords |
+| 9. Review ⭯ | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic`, `hardening`, `seo-geo` | comprehensive audit (5 bars + contrast + **wiring gate** + **hardening/security gate** + **GEO gate**) → phase-routed findings; orchestrator loops fixes→re-review, max 3 (see *The review loop*) |
 | 10. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth; **syncs `.env` → Vercel** so redeploys pick up the user's real values |
 
 ## How to run it
@@ -129,14 +130,17 @@ reviewer does by hand, but automatic:
 1. **Audit** — delegate to `landing-review`. It renders EVERY page (Playwright @ 390/768/1440) and
    judges EVERYTHING: the 5 bars (does it look AI? does it sell? is it ALIVE?), conversion
    heuristics, contrast (measured), the **wiring gate** (no dead CTAs / decorative forms / unread
-   env / missing assets / unmounted analytics / all pages built), and the **hardening gate**
+   env / missing assets / unmounted analytics / all pages built), the **hardening gate**
    (security headers, validated + rate-limited endpoints, typed env, `tsc`/`lint` pass, CI +
-   pre-commit present, no spaghetti). It returns **PASS/FAIL + a structured findings list**, each
-   finding tagged with the phase that OWNS the fix.
+   pre-commit present, no spaghetti), and the **GEO gate** (AI crawlers welcomed or a documented
+   opt-out, `llms.txt`+`llms-full.txt` matching the pages, valid right-type JSON-LD, freshness dates,
+   NO fabricated Review/rating/entity schema, citable answer-chunks). It returns **PASS/FAIL + a
+   structured findings list**, each finding tagged with the phase that OWNS the fix.
 2. **Route the fixes** — for each finding, re-delegate to its owning phase to fix in place:
    - code · wiring · security/hardening · missing pages/features · architecture → **`landing-build`**
    - craft (type/spacing/contrast/states/responsive) → `landing-polish`
-   - meta/OG/schema/CWV → `landing-seo`  ·  motion → `landing-motion`
+   - meta/OG/schema/CWV **+ GEO (robots/llms.txt/entity schema/freshness/AI-referral)** → `landing-seo`
+   - motion → `landing-motion`  ·  GEO content / answer-chunks → `landing-copy`
    - positioning/copy/visual-direction (rare) → upstream (`copy` / `design`)
    Most fixes land on **`build`** — it owns the code.
 3. **Re-audit** — run `landing-review` again on the patched site.
@@ -218,9 +222,13 @@ not full content, to keep the thread thin.
 - `references/animation-levels.md` — subtle/medium/rich motion + library stack.
 - `references/contrast-check.md` — the WCAG gate (measured, not eyeballed).
 - `references/instrumentation.md` — the **Wiring Contract** (declared = implemented): GA4/GTM,
-  consent, working forms (internal `/api/contact` route + env endpoint), sitemap/robots,
-  `.env.example`. Research-driven — wire only what the architecture decided, but whatever EXISTS must
-  function. Load in seo + build (leave nothing as a dead stub or an unread var).
+  consent, working forms (internal `/api/contact` route + env endpoint), sitemap/robots, the
+  **AI-referral analytics** snippet, `.env.example`. Research-driven — wire only what the architecture
+  decided, but whatever EXISTS must function. Load in seo + build (leave nothing as a dead stub).
+- `seo-geo` skill → `references/checklist.md` — the **SEO + GEO/AEO doctrine + the GEO checklist**:
+  technical/on-page SEO, the AI-crawler `robots.ts`, `llms.txt`+`llms-full.txt`, richer + entity
+  JSON-LD templates (REAL data only — never fabricate Review/rating/entity facts), freshness dates,
+  citable answer-chunks, and AI-referral analytics. Load in seo + review (the GEO gate) + copy.
 - `references/assets.md` — images: GENERATE the signature visual, OG card, **logo mark + branded
   favicon set** (never the framework default) and SVGs (via bundled `web-assets` + Playwright,
   **installed if missing**) as swappable named files; ASK the user only for real photos. Load in

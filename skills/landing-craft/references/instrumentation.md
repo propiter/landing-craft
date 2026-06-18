@@ -47,6 +47,32 @@ onClick={() => window.gtag?.('event', 'generate_lead', { cta: 'hero_agendar' })}
 ```
 Track the form submit and any signup/booking too. Name events consistently.
 
+## 2A. AI-referral tracking — measure GEO ROI (ships with analytics)
+When analytics ships, also classify traffic arriving FROM AI answer engines (the GEO payoff) so the
+user can SEE it. Map `document.referrer`'s hostname to a source and fire a GA4 custom event:
+
+```ts
+// src/lib/ai-referrals.ts
+export const AI_REFERRERS: Record<string, string> = {
+  'chat.openai.com': 'chatgpt', 'chatgpt.com': 'chatgpt',
+  'perplexity.ai': 'perplexity', 'www.perplexity.ai': 'perplexity',
+  'gemini.google.com': 'gemini', 'bard.google.com': 'gemini',
+  'claude.ai': 'claude', 'copilot.microsoft.com': 'copilot',
+}
+export function aiSourceFromReferrer(ref: string): string | null {
+  try { return AI_REFERRERS[new URL(ref).hostname] ?? null } catch { return null }
+}
+```
+```tsx
+// client component mounted in layout.tsx — fires once on mount
+useEffect(() => {
+  const src = aiSourceFromReferrer(document.referrer)
+  if (src) window.gtag?.('event', 'ai_referral', { ai_source: src })
+}, [])
+```
+Register `ai_source` as a GA4 custom dimension. CSP-safe — it only calls the already-allowed `gtag`.
+Full GEO rationale + the hostname list: `seo-geo` → `references/checklist.md` §4E.
+
 ## 3. Consent (GDPR/cookies) — required with analytics/ads
 Ship a small **cookie-consent banner** and gate non-essential tags behind it (Google **Consent
 Mode v2**: default denied → granted on accept). Keep essential cookies working without consent. Don't
@@ -88,12 +114,16 @@ dashboard) and a redeploy picks it up** — no code change needed. In `.env.exam
 placeholder (e.g. `https://your-n8n-or-formspree-endpoint.example/webhook`) — NEVER a real or
 private URL. Never leave a `<form>` that goes nowhere.
 
-## 5. SEO infrastructure (Next App Router)
-- `app/sitemap.ts` → generate `sitemap.xml` for ALL pages (incl. blog posts).
-- `app/robots.ts` → `robots.txt` (allow + point to the sitemap).
+## 5. SEO + GEO infrastructure (Next App Router)
+- `app/sitemap.ts` → generate `sitemap.xml` for ALL pages (incl. blog posts), with `lastModified` dates.
+- `app/robots.ts` → `robots.txt` that **deliberately welcomes the AI answer-engine crawlers**
+  (`GPTBot`/`ClaudeBot`/`PerplexityBot`/`Google-Extended`/`CCBot`/…) so the site can be CITED, with a
+  documented opt-out toggle, still blocking `/api/` + sensitive paths (per `seo-geo` §4A).
 - Per-page `metadata` (title/description) + canonical; OG/Twitter image (generate via `web-assets`).
-- JSON-LD per page (Organization / Product / FAQPage / BreadcrumbList / Article for posts).
-- `llms.txt` for AI-search discoverability (per `seo-geo`).
+- JSON-LD per page, richer + entity-deep, REAL DATA ONLY (Organization with founder/`sameAs` /
+  SoftwareApplication / FAQPage / BreadcrumbList / WebSite+SearchAction / Article for posts) with
+  freshness `datePublished`+`dateModified`. NEVER fabricate Review/rating/entity facts (per `seo-geo`).
+- `llms.txt` + `llms-full.txt` at the root for AI-search ingestion + citation (per `seo-geo` §4B).
 
 ## 6. Performance & misc to leave ready
 - Analytics/scripts load after interactive (`@next/third-parties` handles this) — don't block LCP.
