@@ -12,7 +12,7 @@ design → build → motion → polish → SEO → review → **deploy** (GitHub
 interrogating you**. It isn't done until it **looks crafted, sells, feels alive, and is live.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
-![Version](https://img.shields.io/badge/version-1.11.0-black.svg)
+![Version](https://img.shields.io/badge/version-1.12.0-black.svg)
 ![Agents](https://img.shields.io/badge/sub--agents-12-ff5d01.svg)
 ![Commands](https://img.shields.io/badge/commands-8-22c55e.svg)
 ![Platforms](https://img.shields.io/badge/Claude·OpenCode·Cursor-cross--platform-7c3aed.svg)
@@ -120,7 +120,7 @@ hands you a live URL (it installs the Vercel CLI if missing and guides the one-t
 | 6 | Motion | `landing-motion` | Scroll-reactive motion at the chosen intensity, reduced-motion safe |
 | 7 | Polish | `landing-polish` | Craft pass — type, spacing, contrast (measured), responsive, states |
 | 8 | SEO | `landing-seo` | Meta, OG, JSON-LD, CWV, llms.txt per page, researched keywords |
-| 9 | Review | `landing-review` | Renders & scores the 5 bars + contrast gate + a **wiring gate** (no dead CTAs, decorative forms, unread env vars, missing assets, or unmounted analytics); loops until it passes |
+| 9 | Review ⭯ | `landing-review` | **Comprehensive final audit in a closed loop** — renders every page & scores the 5 bars + contrast + **wiring gate** (dead CTAs, decorative forms, unread env, missing assets) + **hardening/security gate** (headers, validated endpoints, typed env, tsc/lint, no spaghetti). Routes every finding back to `build` (or polish/seo) and re-reviews — **max 3 passes**, honest about any remainder |
 | 10 | Deploy | `landing-deploy` | GitHub + Vercel; installs the CLI & guides first-time login; **syncs `.env` → Vercel** so a redeploy picks up your real GA ID / form endpoint / canonical URL |
 
 ## The five bars (enforced every phase)

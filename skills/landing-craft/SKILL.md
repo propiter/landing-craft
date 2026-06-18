@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.11.0"
+  version: "1.12.0"
 ---
 
 # Landing Craft
@@ -55,7 +55,10 @@ find and keep going.* The product ships complete — **no known debt, nothing "t
 - **Architecture** (after strategy): the page map (multi-page) + the UNIQUE per-theme section plan.
 - **Planning**: `strategy → {copy, design}`, all grounded in the research.
 - **Production**: `build` (multi-page) → `motion` → `polish`, with `seo` (researched keywords) off `build`.
-- **Gate**: `review` renders and critiques (5 bars incl. ALIVE); LOOPS back until it passes.
+- **Gate**: `review` is the comprehensive final audit — renders every page and scores the 5 bars
+  (incl. ALIVE) + contrast + the **wiring gate** + the **hardening/security gate**, returning a
+  phase-routed findings list. The **orchestrator loops** review → fixes → re-review (see *The review
+  loop*) until PASS or 3 passes.
 - **Deploy** (final): GitHub + Vercel — a live URL. Research, SEO and deploy are NOT optional.
 
 ## Phase → Sub-agent map
@@ -117,6 +120,32 @@ do NOT run an interview. Gather context by RESEARCHING, not by asking:
 **Tokens are not a constraint** — deliver a complete, market-current product, not a quick HTML page.
 A landing is the market study + a multi-page site, not a single file. If the user states a lasting
 preference ("siempre con muchas animaciones"), `mem_save` it to the profile. Never skip research.
+
+## The review loop (automated quality gate — max 3 passes)
+
+The final audit runs in a CLOSED LOOP the orchestrator drives — the same thorough pass a senior
+reviewer does by hand, but automatic:
+
+1. **Audit** — delegate to `landing-review`. It renders EVERY page (Playwright @ 390/768/1440) and
+   judges EVERYTHING: the 5 bars (does it look AI? does it sell? is it ALIVE?), conversion
+   heuristics, contrast (measured), the **wiring gate** (no dead CTAs / decorative forms / unread
+   env / missing assets / unmounted analytics / all pages built), and the **hardening gate**
+   (security headers, validated + rate-limited endpoints, typed env, `tsc`/`lint` pass, CI +
+   pre-commit present, no spaghetti). It returns **PASS/FAIL + a structured findings list**, each
+   finding tagged with the phase that OWNS the fix.
+2. **Route the fixes** — for each finding, re-delegate to its owning phase to fix in place:
+   - code · wiring · security/hardening · missing pages/features · architecture → **`landing-build`**
+   - craft (type/spacing/contrast/states/responsive) → `landing-polish`
+   - meta/OG/schema/CWV → `landing-seo`  ·  motion → `landing-motion`
+   - positioning/copy/visual-direction (rare) → upstream (`copy` / `design`)
+   Most fixes land on **`build`** — it owns the code.
+3. **Re-audit** — run `landing-review` again on the patched site.
+4. **Repeat** up to **3 passes total**; stop the instant review returns a real PASS.
+
+**Honesty at the cap:** if it still isn't perfect after 3 passes, do NOT claim it is — report the
+remaining issues plainly (severity · where · why they persist) and hand them to the user. Never ship
+a fake "PASS". Deploy runs only after a genuine PASS (or with the user's explicit OK on a documented,
+non-blocking remainder).
 
 ## Deploy phase (final; hands-off — the user only opens a URL)
 

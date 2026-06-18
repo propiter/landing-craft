@@ -82,9 +82,16 @@ verify — security headers, validated endpoints, typed env, strict TS, atomic a
    Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.
 
 ## Output
-Return a verdict: **PASS** or **FAIL**, plus a table of issues `Severity · Where · Fix`. If FAIL,
-hand the fixes to `landing-polish` (or upstream if it's a copy/design problem) and re-review — max
-3 passes. Only return PASS when both bars are met. Save `landing/review.md`.
+Return a verdict: **PASS** or **FAIL**, plus a **structured findings list** — each row
+`Severity · Dimension · Where · Fix · Owner`, where **Owner** is the phase that fixes it:
+`build` for code / wiring / security-hardening / missing pages-features / architecture (the DEFAULT —
+build owns the code); `polish` for craft (type/spacing/contrast/states/responsive); `seo` for
+meta/OG/schema/CWV; `motion` for motion; `copy`/`design` upstream ONLY for positioning or
+visual-direction. You are the AUDITOR — you do NOT re-dispatch; the **orchestrator drives the loop**
+(review → route each finding to its Owner phase → re-review, max 3 passes — see SKILL.md "The review
+loop"). Only return PASS when the 5 bars + conversion + the wiring gate + the hardening gate are ALL
+clean. If it's still imperfect at the 3rd pass, say so HONESTLY with the remaining findings — never a
+fake PASS. Save `landing/review.md`.
 
 **You are the zero-debt backstop.** Any debt you find — duplicated markup, dead links, missing
 hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **any
