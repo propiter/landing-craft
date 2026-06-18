@@ -106,6 +106,12 @@ verify — security headers, validated endpoints, typed env, strict TS, atomic a
      schema is a **FAIL**.
    - **Freshness dates present** — pages/articles carry real `datePublished`/`dateModified` and the
      sitemap carries `<lastmod>`. Missing freshness on dated content is a **FAIL**.
+   - **Single source for the site URL — no guessed domain shipped.** Every absolute URL (canonical,
+     `og:url`, `og:image`, sitemap, `robots.txt`'s `Sitemap:`, JSON-LD `url`/`@id`, `llms.txt` links)
+     derives from ONE `NEXT_PUBLIC_SITE_URL`. `grep` for a hardcoded/guessed real domain used as a
+     fallback (e.g. `?? "https://acme.com"`) — a guessed domain shipped as fallback is a **FAIL** (use
+     the env, or a neutral placeholder). The TRUE production URL is reconciled post-deploy by
+     `landing-deploy` §2c; here just ensure it's a single env-driven source, not scattered literals.
    - **NO fabricated Review/rating/entity schema (HONESTY — hard gate).** Assert there is NO
      `Review`/`AggregateRating` and no founder/`sameAs`/awards UNLESS it traces to real research/brand
      data. A fabricated rating, review, or entity fact is an automatic **FAIL** (it's a Google manual

@@ -1,7 +1,7 @@
 {
   "name": "landing-craft",
   "description": "End-to-end landing-page workflow for AI agents. LEADS with an autonomous MARKET STUDY (scrapes competitors, mines keywords, profiles the audience — no interrogation), then orchestrates 12 specialist sub-agents — init → research → strategy → architecture → copy → design → build (multi-page) → motion (scroll-reactive) → polish → SEO → review → deploy (GitHub + Vercel) — to autonomously ship a modern, multi-page, high-converting site that does NOT look AI-generated, ready to view live. Generates its own assets (signature visual/OG/favicons via Playwright, installed if missing), is analytics-ready (GA4/GTM/consent/forms), and enforces zero technical debt. Triggers: build/create a landing page, marketing site, product page, sales page, hero, waitlist, 'armame una landing', 'landing que venda'. Commands: /landing (flagship), /landing-init, /landing-new, /landing-build, /landing-review, /landing-continue, /landing-status, /landing-ship. Next.js + Tailwind by default. Works in Claude Code, OpenCode and Cursor.",
-  "version": "1.15.0",
+  "version": "1.15.1",
   "author": {
     "name": "propiter"
   },

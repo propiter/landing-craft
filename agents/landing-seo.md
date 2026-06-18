@@ -45,6 +45,12 @@ work UNDER the CSP). Read `landing/research.md` (the REAL keywords + search inte
      `llms-full.txt` = the full primary content of the key pages as clean markdown for LLM ingestion.
      Keep BOTH in sync with the real pages — every fact REAL and matching the live page (§4B).
    - Semantic headings, canonical URL, sitemap with `<lastmod>` dates.
+   - **One source for the site's absolute URL.** Canonical, `og:url`, `og:image`, sitemap, robots'
+     `Sitemap:`, JSON-LD `url`/`@id` and `llms.txt` links ALL derive from `NEXT_PUBLIC_SITE_URL` (via
+     `src/lib/env.ts`). NEVER hardcode a guessed real domain as a fallback (e.g. `?? "https://acme.com"`)
+     — use the env, or a neutral placeholder. The TRUE production URL is only known after deploy, so
+     `landing-deploy` (§2c) sets `NEXT_PUBLIC_SITE_URL` to the real `*.vercel.app` (or custom domain)
+     and redeploys — your job is to make that a ONE-line change, not a hunt through scattered literals.
 5. **Core Web Vitals** — LCP = hero, no CLS, preconnect/preload critical assets, images sized +
    lazy below fold.
 6. **Analytics — wire it READY (server-rendered); the ID is a POST-LAUNCH step.** Mount ONE analytics

@@ -100,6 +100,27 @@ BUILD time by `next.config.ts` to allow that origin in the CSP (`connect-src`/`f
 after the user sets a real form endpoint, a redeploy is what makes the form work under the policy —
 the same redeploy that picks up GA/GTM IDs. One redeploy syncs analytics, the form, and the CSP.
 
+## 2c. Reconcile the REAL URL everywhere (the true URL only exists AFTER deploy)
+
+The production URL is only KNOWN once Vercel deploys (e.g. `acme-landing-x7k2.vercel.app`, NOT the
+guessed `acme.com` the build may have used). Any **fallback / placeholder / guessed** absolute URL
+that shipped is now wrong — and a wrong canonical/OG/sitemap silently hurts SEO, GEO and sharing. So:
+
+1. **Capture the true public URL** — the project's production `*.vercel.app` alias (or the custom
+   domain if one is attached). This is the single source of truth for the site's absolute URL.
+2. **Set `NEXT_PUBLIC_SITE_URL` to it** — in `.env.local` AND Vercel (it's read at BUILD time for
+   canonical/OG/sitemap/JSON-LD). The whole site should derive every absolute URL from this ONE var.
+3. **Hunt down stragglers** — `grep` the repo for any HARDCODED/guessed absolute URL that did NOT come
+   from the env (a `?? "https://acme.com"` fallback in `seo.ts`/`site-config`, an absolute `og:image`,
+   `sitemap.ts`, `robots.ts`'s sitemap line, JSON-LD `url`/`@id`, `llms.txt`/`llms-full.txt` links,
+   `manifest`). Fix them to read from `NEXT_PUBLIC_SITE_URL` (preferred) or update the literal — leave
+   ZERO references to a guessed/old domain. (Zero-debt: change at the root, no stale URLs left.)
+4. **Redeploy** so canonical/OG/sitemap/robots/JSON-LD/llms.txt all carry the REAL URL.
+5. **Verify** — `curl` the live page and confirm `<link rel="canonical">`, `og:url`, the sitemap host,
+   and `robots.txt`'s `Sitemap:` line ALL equal the real URL (no leftover fallback). 
+6. **Custom domain later** = the same reconciliation: when the user attaches a real domain, update
+   `NEXT_PUBLIC_SITE_URL` → redeploy → re-verify. It's a normal post-launch iteration.
+
 ## Rules
 - **Preview first, production on approval.** Never push a first draft straight to a live domain.
 - Don't commit secrets or tokens. If a `VERCEL_TOKEN` is provided in the env, you may use
