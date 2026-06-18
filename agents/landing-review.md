@@ -131,7 +131,10 @@ gate + the hardening gate + the GEO gate are ALL clean. If it's still imperfect 
 fake PASS. Save `landing/review.md`.
 
 **You are the zero-debt backstop.** Any debt you find — duplicated markup, dead links, missing
-hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **any
+hover/focus/empty states, broken responsive, hardcoded values, unhandled edge cases, **orphans /
+dead code left after a replacement** (an old component/lib/file still present after a new approach
+replaced it, dead imports/exports, unused env vars, two implementations of the same thing,
+commented-out code — applies during the build AND every post-launch iteration), **any
 scaffolding-without-implementation the wiring gate catches (dead CTAs, decorative forms, unread env
 vars, missing assets, declared-but-unmounted analytics), any production-hardening miss the
 hardening gate catches (no security headers, an unvalidated/unthrottled public endpoint, untyped

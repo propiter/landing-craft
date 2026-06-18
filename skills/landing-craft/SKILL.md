@@ -4,7 +4,7 @@ description: "Trigger: build/create/make a landing page, marketing site, product
 license: Apache-2.0
 metadata:
   author: propiter
-  version: "1.14.0"
+  version: "1.15.0"
 ---
 
 # Landing Craft
@@ -40,6 +40,12 @@ misses, broken responsive, missing states, hardcoded values, repetition) AND the
 artifacts. Later phases RE-CHECK earlier work and repair anything that slipped; `review` is the
 backstop. When the orchestrator delegates, it tells each sub-agent: *honor zero-debt — fix what you
 find and keep going.* The product ships complete — **no known debt, nothing "to fix later".**
+
+**Change at the ROOT — never leave orphans.** When you replace an approach (a component, a lib, a
+pattern, an env var, a dependency), DELETE what it replaced in the SAME pass: no orphaned files, no
+dead imports/exports, no unused env vars, no commented-out code, no "old + new" coexisting. Refactor
+every caller. Leave it as if it had always been this way. This holds during the build AND during
+**every post-launch iteration** (see *Post-launch iteration*).
 
 ## The Pipeline (the DAG)
 
@@ -175,6 +181,27 @@ After review PASSES, delegate to `landing-deploy`. Goal: the user does nothing b
    linked dir updates the same project. Hand back the **public URL** + the repo URL.
 
 Never auto-promote a first draft straight to production. Preview first, prod on approval.
+
+## Post-launch iteration (the cycle does NOT end at deploy)
+
+After the landing ships, the user iterates — "change the hero", "swap this copy", "wire my real
+analytics", "add a section". Every such change gets the SAME discipline as the build: clean, verified,
+no debt. The orchestrator handles each request as a mini-pipeline:
+
+1. **Scope it** — pin down exactly what the user wants and which files/components/phase it touches.
+2. **Change at the ROOT, clean** — delegate the edit to the owning phase (mostly `build`; `polish`/
+   `seo`/`motion` as fits). **When you replace an approach, DELETE what it replaced in the same pass**
+   — no orphaned files, dead imports/exports, unused env vars, or "old + new" living together (this is
+   exactly the dead-code trap to avoid). Refactor every caller.
+3. **Verify the change** — run a FOCUSED `landing-review` on what changed (the wiring / hardening /
+   GEO / contrast / a11y checks that apply to the diff), render/curl if it's visual or runtime. Don't
+   re-run the whole pipeline — verify the blast radius of the change.
+4. **Fix-loop** — if the check finds issues, fix and re-verify, **max 3 passes** (same loop as the
+   build). Only "done" when the change is clean AND verified.
+5. **Redeploy** — if it was deployed, sync any changed env and `vercel deploy` the linked project;
+   `curl` the live URL (200 + title) to confirm.
+6. **End with NO debt** — the site is as clean after the iteration as it was at launch. Never ship a
+   change that leaves orphans or an unverified edit.
 
 ## Artifacts & continuity
 
