@@ -78,7 +78,7 @@ needs (we already own them) and returns a structured artifact. Pass the prior ar
 | 6. Motion | `landing-motion` | `motion-craft`, `animation-levels` | scroll-reactive motion at the chosen intensity, reduced-motion safe |
 | 7. Polish | `landing-polish` | Impeccable, `contrast-check` | craft pass, responsive, AA contrast (measured), focus states |
 | 8. SEO | `landing-seo` | `seo-geo` | meta/OG/JSON-LD/CWV/llms.txt per page, targeting the researched keywords |
-| 9. Review | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic` | render + score the 5 bars + contrast gate + **wiring gate** (no dead CTAs / decorative forms / unread env vars / missing assets / unmounted analytics) → pass/fail |
+| 9. Review ⭯ | `landing-review` | `design-review-loop`, `contrast-check`, `alive-not-generic`, `hardening` | comprehensive audit (5 bars + contrast + **wiring gate** + **hardening/security gate**) → phase-routed findings; orchestrator loops fixes→re-review, max 3 (see *The review loop*) |
 | 10. Deploy | `landing-deploy` | `gh`, Vercel CLI | repo pushed + a live URL; installs the CLI if missing & guides first-time auth; **syncs `.env` → Vercel** so redeploys pick up the user's real values |
 
 ## How to run it
