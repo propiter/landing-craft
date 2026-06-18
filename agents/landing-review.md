@@ -56,8 +56,13 @@ verify — security headers, validated endpoints, typed env, strict TS, atomic a
    - **Branded, not default** — a CUSTOM favicon (NOT the framework / Next / Vercel default), a
      `logo` asset, and the OG card all exist as files in `public/`. A default favicon or an unbranded
      site is a FAIL — these always ship generated and swappable.
-   - **Analytics/consent IF intended by the strategy** — the GA/GTM script is actually present in
-     the rendered DOM and consent gates it. (If the strategy didn't call for analytics, skip.)
+   - **Analytics WIRED correctly (not necessarily live) IF the strategy calls for it** — ONE
+     server-rendered implementation mounted via `@next/third-parties` / `next/script`, env-gated.
+     **FAIL on a `useEffect` gtag injector, or TWO analytics implementations** (`grep` for
+     `googletagmanager.com/gtag` appended in a `useEffect`, and for more than one analytics module).
+     The GA ID is a POST-LAUNCH user step, so an EMPTY id at launch is EXPECTED — do NOT fail for
+     "GA not live". Verify the wiring + that the cookie banner's Accept flips
+     `gtag('consent','update', {analytics_storage:'granted'})`.
    Any failure routes to `landing-build` / `landing-seo`, then re-check before PASS.
 6. **Hardening gate (production-grade — MANDATORY, research-proportionate).** Verify the site is
    shipped hardened, not as a demo (per `references/hardening.md`). Check ONLY what the architecture

@@ -47,11 +47,17 @@ work UNDER the CSP). Read `landing/research.md` (the REAL keywords + search inte
    - Semantic headings, canonical URL, sitemap with `<lastmod>` dates.
 5. **Core Web Vitals** — LCP = hero, no CLS, preconnect/preload critical assets, images sized +
    lazy below fold.
-6. **Analytics — wire it, don't just declare it.** IF the strategy calls for analytics, the GA4/GTM
-   component must be ACTUALLY mounted in `layout.tsx` behind env (`NEXT_PUBLIC_GA_ID` /
-   `NEXT_PUBLIC_GTM_ID`) via `@next/third-parties`, and **verified present in the rendered DOM** —
-   not merely declared as an env var. Add **Consent Mode v2** + a cookie banner that gates it, and
-   fire a **conversion event** on the primary CTA. A declared env var that no code reads is debt.
+6. **Analytics — wire it READY (server-rendered); the ID is a POST-LAUNCH step.** Mount ONE analytics
+   implementation in `layout.tsx` via **`@next/third-parties`** (or `next/script`, server-rendered) —
+   **NEVER a `useEffect` that appends a `<script>`** (unreliable, never in the SSR HTML, the classic
+   "GA shows nothing"), and NEVER two implementations. Gate it behind env (`NEXT_PUBLIC_GA_ID` /
+   `NEXT_PUBLIC_GTM_ID`) so it renders only when the ID exists. **The ID itself is a post-launch user
+   step** (`references/instrumentation.md` §1B) — ship with the env EMPTY, do NOT block on it, and at
+   hand-off give the user the steps (create GA4 → send the ID → I add it to `.env.local` + Vercel +
+   redeploy → accept the cookie banner to verify in Realtime). Add **Consent Mode v2** + a cookie
+   banner whose Accept calls `gtag('consent','update', {analytics_storage:'granted', …})`. Fire a
+   **conversion event** on the primary CTA, and keep the conversion/`trackConversion` helper in the
+   SAME analytics module (never a second analytics file).
    **Coordinate with the CSP (`references/hardening.md`).** The `Content-Security-Policy` in
    `next.config.ts` MUST allow the EXACT analytics domains you inject and the form endpoint origin —
    `script-src` + `connect-src` include `https://www.googletagmanager.com https://www.google-analytics.com`,

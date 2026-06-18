@@ -24,21 +24,41 @@ If a thing is present, it MUST function:
 - **Analytics/consent, IF the strategy calls for them, are ACTUALLY injected/mounted** (the
   component is in the rendered DOM), not just an env var.
 
-## 1. Analytics — GA4 and/or Google Tag Manager
-On **Next.js**, use `@next/third-parties/google` (official, performance-safe — loads after hydration):
+## 1. Analytics — GA4 and/or Google Tag Manager (ship READY; the ID is a POST-LAUNCH step)
+**Ship the site analytics-READY, but the real Measurement ID is a post-launch user step** (see
+"§1B Analytics is a post-launch step"). At build you wire the component **env-gated** (renders only
+when the ID is set); the site launches fine with the ID empty.
+
+**Use the official, SERVER-RENDERED integration — NEVER a `useEffect` injector.** On Next.js use
+`@next/third-parties/google` (or `next/script` with `strategy="afterInteractive"`). A hand-rolled
+`useEffect` that appends a `<script>` is unreliable — wrong hydration timing, never in the SSR HTML,
+easy to miss — and is exactly what makes "GA shows nothing". **One analytics implementation only.**
 
 ```tsx
 // app/layout.tsx
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
-// ...inside <body>, after children:
+// ...inside <body>, after children (renders nothing until the ID exists):
 {process.env.NEXT_PUBLIC_GTM_ID && <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />}
 {process.env.NEXT_PUBLIC_GA_ID  && <GoogleAnalytics  gaId={process.env.NEXT_PUBLIC_GA_ID} />}
 ```
 
 - Prefer **GTM** when the user will manage many tags (ads pixels, etc.); **GA4 directly** for just
   analytics. Wire BOTH behind env so the user picks.
-- Env: `NEXT_PUBLIC_GA_ID` (`G-XXXX`), `NEXT_PUBLIC_GTM_ID` (`GTM-XXXX`). Put placeholders in
-  `.env.example` and document them in the README.
+- Env: `NEXT_PUBLIC_GA_ID` (`G-XXXX`), `NEXT_PUBLIC_GTM_ID` (`GTM-XXXX`). EMPTY placeholders in
+  `.env.example`; document in the README. **These are inlined at BUILD time → they must live in
+  Vercel (not just `.env.local`), or production ships without analytics.** The deploy phase syncs
+  them; a redeploy is what activates them.
+
+## 1B. Analytics is a POST-LAUNCH step — guide the user, don't block the launch
+The site does NOT need a GA ID to ship — analytics is a 2-minute follow-up the user does AFTER the
+landing is live (a separate iteration). At hand-off, tell them plainly, step by step:
+1. Create a **GA4 property** at analytics.google.com → copy the **Measurement ID** (`G-XXXXXXXXXX`).
+   (Or a GTM container ID `GTM-XXXXXXX`.)
+2. Send it to me — I add `NEXT_PUBLIC_GA_ID` to `.env.local` **and Vercel**, then redeploy.
+3. To verify: open the live site, **accept the cookie banner** (Consent Mode v2 starts denied, so
+   GA only sends full data after consent), then watch **GA4 → Realtime**.
+Never fake or guess an ID, and never fail the build/review just because analytics isn't connected yet
+— it's expected to be empty at launch.
 
 ## 2. Conversion tracking — the CTA is the whole point
 Fire an event on the primary CTA so the user can see conversions:

@@ -81,9 +81,17 @@ value; skip any key whose value is empty or a placeholder like `your_key_here`.
 **Tell the user what to fill in.** After syncing, list the vars that still have placeholder or
 empty values (e.g. `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_FORM_ENDPOINT`, `NEXT_PUBLIC_SITE_URL`) and
 tell the user:
-> "Fill these in your `.env.local` with your real values (GA/GTM ID, form endpoint, canonical URL)
-> and ask me to redeploy — or set them directly in the Vercel dashboard under Settings → Environment
-> Variables. A redeploy will pick them up automatically."
+> "Fill these in your `.env.local` with your real values (form endpoint, canonical URL) and ask me
+> to redeploy — or set them in the Vercel dashboard. A redeploy picks them up automatically."
+
+**Analytics is a guided POST-LAUNCH step — spell it out** (the site shipped analytics-READY but with
+the ID empty; it's a 2-minute follow-up, not a launch blocker — see `references/instrumentation.md`
+§1B). Hand the user these exact steps:
+> "To turn on Google Analytics: 1) create a **GA4 property** at analytics.google.com and copy the
+> **Measurement ID** (`G-XXXXXXXXXX`); 2) send it to me — I add `NEXT_PUBLIC_GA_ID` to `.env.local`
+> **and Vercel** and redeploy; 3) open the live site, **accept the cookie banner** (Consent Mode v2
+> starts denied, so GA only sends full data after consent), then watch **GA4 → Realtime** to see
+> yourself. Reminder: `.env.local` is local-only — the ID MUST be in Vercel for production."
 
 **Redeploy contract:** because the project is already linked, a later `vercel deploy` re-reads the
 synced env store — the user's updated values take effect on the next redeploy with no extra steps.
